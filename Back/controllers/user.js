@@ -34,6 +34,7 @@ exports.signup = (req, res, next) => {
 
 // Route login /api/auth/login
 exports.login = (req,res,next) => {
+    console.log(req.body);
     if (req.body.email == null || req.body.password == null) {
         return res.status(400).json({'error': 'Champs obligatoire vide'})
     }

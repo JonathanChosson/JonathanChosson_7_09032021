@@ -1,18 +1,25 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <Header></Header>
+    <Sign></Sign>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import Sign from '../components/sign.vue'
+import { mapState } from 'vuex'
+import Header from '../components/Header.vue'
 
 export default {
   name: 'Home',
   components: {
-    HelloWorld
+    Sign,
+    Header
+  },
+    Headerputed: {
+        ...mapState(['sessionStorage']),
   }
 }
+
 </script>
