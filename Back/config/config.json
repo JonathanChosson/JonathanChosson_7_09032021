@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "pkoipa",
+    "database": "database_development_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "pkoipa",
+    "database": "database_test_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "pkoipa",
+    "database": "database_production_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}

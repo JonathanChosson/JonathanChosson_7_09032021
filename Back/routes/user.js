@@ -1,0 +1,14 @@
+//import des modules et fichiers complémentaires
+const express = require('express');
+const router = express.Router();
+const userCtrl = require('../controllers/user');
+const auth =require('../middleware/auth')
+
+//lier les routes au controllers
+router.post('/signup', userCtrl.signup);                    //C
+router.get('/profil', auth, userCtrl.profil);               //R
+router.post('/login', userCtrl.login);                      //R
+router.put('/updateProfil', auth, userCtrl.updateProfil);   //U
+
+
+module.exports = router;
