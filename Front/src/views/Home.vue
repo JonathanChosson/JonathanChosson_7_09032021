@@ -1,7 +1,7 @@
 <template>
   <div>
     <Header></Header>
-    <Sign></Sign>
+    <Sign v-if="!logged"></Sign>
   </div>
 </template>
 
@@ -17,8 +17,13 @@ export default {
     Sign,
     Header
   },
-    Headerputed: {
-        ...mapState(['sessionStorage']),
+  computed: {
+        ...mapState(['sessionStorage','logged']),
+  },
+  mounted: function(){
+        if(this.sessionStorage.length > 0){
+            this.$store.commit("update")
+        }
   }
 }
 

@@ -11,16 +11,21 @@ export default new Vuex.Store({
       "connexion" : "http://localhost:3000/api/auth/login",
       "enregistrement" : "http://localhost:3000/api/auth/signup"
     },
+    logged: false
   },
   mutations: {
     connexion(state, data){
+      state.logged = true;
       state.sessionStorage.setItem(0, JSON.stringify(data));
+    },
+    update(state){
+      state.logged = true;
     }
   },
   actions: {
   },
   modules: {
-  }
+  },
 })
 
 

@@ -20,7 +20,7 @@ exports.signup = (req, res, next) => {
                     bio: req.body.bio,
                     isAdmin: 0
                     })
-                    .then((user) => res.status(201).json({ 'message': user.id }))
+                    .then((user) => res.status(201).json({ 'message': "utilisateur créee" }))
                     .catch(error => res.status(400).json({ error }));
             })
         }else{
