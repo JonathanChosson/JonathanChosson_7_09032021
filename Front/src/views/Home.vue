@@ -2,6 +2,7 @@
   <div>
     <Header></Header>
     <Sign v-if="!logged"></Sign>
+    <ListMessage v-else></ListMessage>
   </div>
 </template>
 
@@ -10,12 +11,14 @@
 import Sign from '../components/sign.vue'
 import { mapState } from 'vuex'
 import Header from '../components/Header.vue'
+import ListMessage from '../components/listMessage'
 
 export default {
   name: 'Home',
   components: {
     Sign,
-    Header
+    Header,
+    ListMessage
   },
   computed: {
         ...mapState(['sessionStorage','logged']),

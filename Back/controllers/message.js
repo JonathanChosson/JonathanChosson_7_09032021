@@ -16,6 +16,12 @@ exports.createMessage = (req, res, next) => {
 
 // Retourne Liste de message /api/messages/listMessage
 exports.listMessage = (req, res,  next) => {
+        let userId = "";
+    if (req.body.userId === undefined){
+        userId = req.headers.userid;
+    }else {
+        userId = req.body.userId;
+    }
     let fields = req.query.fields;
     let limit = parseInt(req.query.limit);
     let offset = parseInt(req.query.offset);
@@ -34,7 +40,7 @@ exports.listMessage = (req, res,  next) => {
             async function liked(){
                 let reponse = await models.Like.findOne({
                 where: {
-                    userId: req.body.userId,
+                    userId: userId,
                     messageId:message[i].id
                 }
             })
