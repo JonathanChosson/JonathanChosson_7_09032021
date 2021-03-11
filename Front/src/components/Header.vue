@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="sticky-top">
     <b-navbar toggleable="lg" type="dark" variant="dark">
         <b-navbar-brand href="#"><img src="../assets/images/Groupomania_Logos/icon-left-font-monochrome-white.png" alt="Groupomania" class="header_img" /></b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
