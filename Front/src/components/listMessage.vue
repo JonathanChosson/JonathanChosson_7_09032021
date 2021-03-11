@@ -44,19 +44,24 @@
         <div class="card mt-1"  v-for="(message) in listMessage.message" :key="message.id">
             <img :src="message.attachment" class="card-img-top" alt="">
             <div class="card-body p-0 pt-1">
-                <h5 class="card-title">{{message.title}}</h5>
+                <p class="card-title h5">{{message.title}}</p>
                 <p class="card-text text-center">{{message.content}}</p>
                 <p class="h6">Ecris par : {{message.createdBy}}</p>
                 <div class="d-flex justify-content-between align-self-center pl-1 pr-1">
-                    <p class="m-0">
-                        <b-icon icon="hand-thumbs-up" variant="dark" class="border rounded-circle p-1 bg-secondary" font-scale="1.6" v-if="!message.liked" @click="updateLike(message.id)"></b-icon>
-                        <b-icon icon="hand-thumbs-up" variant="dark" class="border rounded-circle p-1 bg-primary" font-scale="1.6"  v-else @click="updateLike(message.id)"></b-icon> 
-                        <span> {{message.likes}}</span>
-                    </p>
-                    <p class="m-0">
-                        <b-icon icon="pencil-fill" variant="primary" v-if="message.UserId == userId" v-b-modal="'my-modal('+(message.id)+')'"></b-icon>
-
-                    </p>
+                    <div class="m-0">
+                        <b-badge variant="dark" class="mb-2" v-if="!message.liked" @click="updateLike(message.id)">
+                            <b-icon icon="hand-thumbs-up"></b-icon>
+                        </b-badge>
+                        <b-badge variant="primary" class="mb-2" v-else @click="updateLike(message.id)">
+                            <b-icon icon="hand-thumbs-up"></b-icon>
+                        </b-badge>
+                        <b-badge class="mb-2  ml-2"> {{message.likes}}</b-badge>
+                    </div>
+                    <div class="m-0">
+                        <b-badge variant="primary" class="mb-2" v-if="message.UserId == userId" v-b-modal="'my-modal('+(message.id)+')'">
+                            <b-icon icon="pencil-fill"></b-icon>
+                        </b-badge>
+                    </div>
                 </div>
             </div>
             <!-- modale de modification -->
