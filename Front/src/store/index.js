@@ -10,7 +10,8 @@ export default new Vuex.Store({
     {
       "connexion" : "http://localhost:3000/api/auth/login",
       "enregistrement" : "http://localhost:3000/api/auth/signup",
-      "listAllMessage" : "http://localhost:3000/api/messages/listMessage"
+      "listAllMessage" : "http://localhost:3000/api/messages/listMessage",
+      "updateLike": "http://localhost:3000/api/messages/likeUpdate"
     },
     logged: false
   },

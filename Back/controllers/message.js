@@ -3,15 +3,28 @@ const models = require('../models');
 
 // Enregistrement de l'utilisateur /api/messages/createMessage
 exports.createMessage = (req, res, next) => {
-    models.Message.create({
-        title: req.body.title,
-        content: req.body.content,
-        attachment: req.body.attachment,
-        likes: 0,
-        UserId: req.body.userId,
+    models.User.findOne({
+        attributes: ['userName'],
+        where: {id : req.body.userId}
     })
-    .then((message) => res.status(201).json({ 'message': message }))
-    .catch(error => res.status(400).json({ error }));
+    .then(function(userFound){
+            models.Message.create({
+            title: req.body.title,
+            content: req.body.content,
+            attachment: req.body.attachment,
+            likes: 0,
+            UserId: req.body.userId,
+            createdBy: userFound.userName
+        })
+        .then((message) => res.status(201).json({ 'message': message }))
+        .catch(error => res.status(400).json({ error }));
+    })
+    .catch(function(err){
+        return res.status(500).json({ 'error': err});
+    })
+
+
+    
 };
 
 // Retourne Liste de message /api/messages/listMessage
@@ -27,7 +40,7 @@ exports.listMessage = (req, res,  next) => {
     let offset = parseInt(req.query.offset);
     let order = req.query.order;
     models.Message.findAll({
-        order: [(order != null) ? order.split(':') : ['title', 'ASC']],
+        order: [(order != null) ? order.split(':') : ['id', 'DESC']],
         attributes: (fields !== '*' &&  fields != null) ? fields.split(',') : null,
         limit: (!isNaN(limit)) ? limit: null,
         offset: (!isNaN(offset)) ? offset : null,
