@@ -1,7 +1,46 @@
 <template>
     <div class="container d-flex flex-column">
         <!-- <p v-for="(message) in listMessage.message" :key="message.id">{{message}}</p> -->
-        <h3 class="m-0"><span class="badge badge-secondary m-1">Ajouter un message <b-icon icon="pencil-square"></b-icon></span></h3>
+        <h3 class="m-0" v-b-modal="'creationModal'"><span class="badge badge-secondary m-1">Ajouter un message <b-icon icon="pencil-square"></b-icon></span></h3>
+        <!-- modale de création -->
+        <Modal modalId='creationModal' modalTitle="Création d'un message">
+            <template v-slot:bodyModal>
+                <b-form >
+                    <b-form-group
+                        label-for="title"
+                    >Titre
+                    <b-form-input
+                        id="title"
+                        type="text"
+                        v-model="creerTitle"
+                    ></b-form-input>
+                    </b-form-group>
+                    <b-form-group
+                        label-for="attachment"
+                    >Medias
+                    <b-form-input
+                        id="attachment"
+                        type="text"
+                        v-model="creerAttachment"
+                    ></b-form-input>
+                    </b-form-group>
+                    <b-form-group
+                        label-for="content"
+                    >Message
+                    <b-form-textarea
+                        id="content"
+                        type="text"
+                        rows="3"
+                        max-rows="6"
+                        v-model="creerContent"
+                    ></b-form-textarea>
+                    </b-form-group>
+                </b-form>
+            </template>
+            <template v-slot:button>
+                <b-button type="submit" variant="success" @click="creerMessage()">Creer message</b-button>
+            </template>
+        </Modal>
         <div class="card mt-1"  v-for="(message) in listMessage.message" :key="message.id">
             <img :src="message.attachment" class="card-img-top" alt="">
             <div class="card-body p-0 pt-1">
@@ -15,12 +54,13 @@
                         <span> {{message.likes}}</span>
                     </p>
                     <p class="m-0">
-                        <b-icon icon="pencil-fill" variant="primary" v-if="message.UserId == userId" v-b-modal="'my-modal'+'('+(message.id)+')'"></b-icon>
+                        <b-icon icon="pencil-fill" variant="primary" v-if="message.UserId == userId" v-b-modal="'my-modal('+(message.id)+')'"></b-icon>
+
                     </p>
                 </div>
             </div>
             <!-- modale de modification -->
-            <Modal :modalId='message.id' modalTitle="Modification du message">
+            <Modal :modalId='"my-modal("+message.id+")"' modalTitle="Modification du message">
                 <template v-slot:bodyModal>
                     <b-form >
                         <b-form-group
@@ -61,6 +101,7 @@
                     <b-button type="submit" variant="success" @click="updateMessage(message.id)">Modifier</b-button>
                 </template>
             </Modal>
+            
         </div>
     </div>
 </template>
@@ -77,7 +118,10 @@ export default {
             userId:"",
             modifTitle:"",
             modifAttachment:"",
-            modifContent:""
+            modifContent:"",
+            creerTitle:"",
+            creerAttachment:"",
+            creerContent:""
         }
     },
     components: {
@@ -137,7 +181,7 @@ export default {
         },
         //Update le message
         updateMessage(messageId) {
-            let tokenInfo = JSON.parse(this.sessionStorage[0])
+            let tokenInfo = JSON.parse(this.sessionStorage[0]);
             let requestOption = {
                     method :"PUT",
                     mode: "cors",
@@ -159,11 +203,43 @@ export default {
                     .then((data) => {
                         console.log(data);
                         this.listMessageUpdate();
-                        // document.location.reload();
+                        this.modifTitle = ""
+                        this.modifAttachment=""
+                        this.modifContent=""
                         this.$bvModal.hide(`my-modal(${messageId})`)
                     })
                 ).catch(erreur => console.log('erreur : ' + erreur));
         },
+        //Creer le message
+        creerMessage() {
+            let tokenInfo = JSON.parse(this.sessionStorage[0]);
+            let requestOption = {
+                    method :"POST",
+                    mode: "cors",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${tokenInfo.token}`,
+                    },
+                    body : JSON.stringify({
+                        "userId":tokenInfo.userId,
+                        "title": this.creerTitle,
+                        "attachment": this.creerAttachment,
+                        "content": this.creerContent
+                    })
+                }
+                fetch(this.urlApi.createMessage, requestOption)
+                .then((reponse) => 
+                    reponse.json()
+                    .then((data) => {
+                        console.log(data);
+                        this.listMessageUpdate();
+                        this.creerTitle = ""
+                        this.creerAttachment=""
+                        this.creerContent=""
+                        this.$bvModal.hide(`creationModal`)
+                    })
+                ).catch(erreur => console.log('erreur : ' + erreur));
+        }
     },
     mounted: function(){
         let tokenInfo = JSON.parse(this.sessionStorage[0])

@@ -15,13 +15,21 @@ import ListMessage from '../components/listMessage'
 
 export default {
   name: 'Home',
+  data(){
+        return {
+            
+        }
+    },
   components: {
     Sign,
     Header,
     ListMessage
   },
   computed: {
-        ...mapState(['sessionStorage','logged']),
+        ...mapState(['sessionStorage','logged','urlApi']),
+  },
+  methods:{
+    
   },
   mounted: function(){
         if(this.sessionStorage.length > 0){

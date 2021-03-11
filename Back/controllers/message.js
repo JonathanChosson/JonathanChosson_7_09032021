@@ -3,6 +3,7 @@ const models = require('../models');
 
 // Enregistrement de l'utilisateur /api/messages/createMessage
 exports.createMessage = (req, res, next) => {
+    console.log(req.body);
     models.User.findOne({
         attributes: ['userName'],
         where: {id : req.body.userId}
@@ -162,20 +163,31 @@ exports.likeUpdate = (req, res, next) => {
 
 // Route Update /api/messages/update
 exports.update = (req, res ,next) => {
-    models.Message.update({
-        title: req.body.title,
-        content: req.body.content,
-        attachment: req.body.attachment
-        },
-        {where : {id : req.body.messageId}}
-    )
-    .then(function(){
-            console.log('message Modifié');
-            res.status(201).json({ "message" : "Modification réussi" })
-
+    models.Message.findOne({
+        where: {id : req.body.messageId}
+    })
+    .then(messageFind =>{
+            let title = req.body.title ? req.body.title : messageFind.dataValues.title ;
+            let content = req.body.content ? req.body.content : messageFind.dataValues.content;
+            let attachment = req.body.attachment ? req.body.attachment : messageFind.dataValues.attachment;
+            models.Message.update({
+                title,
+                content,
+                attachment
+                },
+                {where : {id : req.body.messageId}}
+            )
+            .then(function(){
+                    console.log('message Modifié');
+                    res.status(201).json({ "message" : "Modification réussi" })
+        
+            })
+            .catch(function(err){
+                console.log('message non modifié');
+                return res.status(500).json({ 'error': err});
+            })
     })
     .catch(function(err){
-        console.log('message non modifié');
         return res.status(500).json({ 'error': err});
     })
 }

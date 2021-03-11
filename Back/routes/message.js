@@ -8,7 +8,7 @@ const auth =require('../middleware/auth')
 router.post('/createMessage', auth, messageCtrl.createMessage); //C
 router.get('/listMessage', auth, messageCtrl.listMessage);      //R
 router.put('/likeUpdate', auth, messageCtrl.likeUpdate);        //U
-router.put('/update', auth, messageCtrl.update);                //U
+router.put('/update', auth, messageCtrl.update);              //U
 router.delete('/delete', auth, messageCtrl.delete);             //D
 
 module.exports = router;

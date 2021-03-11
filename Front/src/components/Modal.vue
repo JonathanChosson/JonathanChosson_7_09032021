@@ -1,11 +1,11 @@
 <template>
     <div>
-    <b-modal :id='"my-modal"+"(" + modalId +")"' ref="my-modal" hide-footer :title='modalTitle'>
+    <b-modal :id='modalId' ref="my-modal" hide-footer :title='modalTitle'>
         <div class="d-block text-center">
             <slot name="bodyModal"></slot>
         </div>
         <div class="d-flex justify-content-between align-self-center pl-1 pr-1">
-            <b-button type="submit" variant="warning" @click="hideModal">Conserver</b-button>
+            <b-button type="submit" variant="warning" @click="hideModal">Annuler</b-button>
             <slot name="button"></slot>
         </div>
     </b-modal>
@@ -17,7 +17,7 @@ export default {
     name: 'Modal',
     props: {
         modalId:{
-            type: Number
+            type: String
         },
         modalTitle: {
             type: String
