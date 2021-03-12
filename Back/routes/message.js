@@ -4,6 +4,7 @@ const router = express.Router();
 const messageCtrl = require('../controllers/message');
 const auth =require('../middleware/auth')
 
+
 //lier les routes au controllers
 router.post('/createMessage', auth, messageCtrl.createMessage); //C
 router.get('/listMessage', auth, messageCtrl.listMessage);      //R

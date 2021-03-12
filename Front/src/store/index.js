@@ -13,7 +13,8 @@ export default new Vuex.Store({
       "listAllMessage" : "http://localhost:3000/api/messages/listMessage",
       "updateLike": "http://localhost:3000/api/messages/likeUpdate",
       "updateMessage": "http://localhost:3000/api/messages/update",
-      "createMessage": "http://localhost:3000/api/messages/createMessage"
+      "createMessage": "http://localhost:3000/api/messages/createMessage",
+      "supprMessage": "http://localhost:3000/api/messages/delete"
     },
     logged: false
   },

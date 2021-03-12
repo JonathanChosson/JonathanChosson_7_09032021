@@ -194,7 +194,6 @@ exports.update = (req, res ,next) => {
 
 // Route Delete /api/messages/delete
 exports.delete = (req,res,next) =>{
-    console.log('Route Delete');
     async function messageFind(){
         let reponse = await models.Message.findOne({
         where: {id: req.body.messageId}

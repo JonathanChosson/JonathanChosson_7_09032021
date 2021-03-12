@@ -24,10 +24,12 @@ module.exports = (sequelize, DataTypes) => {
       models.Like.belongsTo(models.User, {
         foreignKey: 'userId',
         as: 'user',
+        onDelete:'CASCADE'
       });
       models.Like.belongsTo(models.Message, {
         foreignKey: 'messageId',
         as: 'message',
+        onDelete:'CASCADE'
       });
     }
   };

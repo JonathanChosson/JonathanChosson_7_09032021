@@ -44,22 +44,27 @@
         <div class="card mt-1"  v-for="(message) in listMessage.message" :key="message.id">
             <img :src="message.attachment" class="card-img-top" alt="">
             <div class="card-body p-0 pt-1">
-                <p class="card-title h5">{{message.title}}</p>
-                <p class="card-text text-center">{{message.content}}</p>
-                <p class="h6">Ecris par : {{message.createdBy}}</p>
+                <p class="card-title h5 font-weight-bold">{{message.title}}</p>
+                <blockquote class="blockquote">
+                    <p class="mb-0">{{message.content}}</p>
+                    <footer class="blockquote-footer">Ecris par :<cite title="Source Title"> {{message.createdBy}}</cite></footer>
+                </blockquote>
                 <div class="d-flex justify-content-between align-self-center pl-1 pr-1">
                     <div class="m-0">
                         <b-badge variant="dark" class="mb-2" v-if="!message.liked" @click="updateLike(message.id)">
-                            <b-icon icon="hand-thumbs-up"></b-icon>
+                            <b-icon icon="hand-thumbs-up" font-scale="1.6"></b-icon>
                         </b-badge>
                         <b-badge variant="primary" class="mb-2" v-else @click="updateLike(message.id)">
-                            <b-icon icon="hand-thumbs-up"></b-icon>
+                            <b-icon icon="hand-thumbs-up" font-scale="1.6"></b-icon>
                         </b-badge>
-                        <b-badge class="mb-2  ml-2"> {{message.likes}}</b-badge>
+                        <span class="h5"> {{message.likes}}</span>
                     </div>
                     <div class="m-0">
-                        <b-badge variant="primary" class="mb-2" v-if="message.UserId == userId" v-b-modal="'my-modal('+(message.id)+')'">
-                            <b-icon icon="pencil-fill"></b-icon>
+                        <b-badge variant="info" class="mb-2" v-if="message.UserId == userId" v-b-modal="'my-modal('+(message.id)+')'">
+                            <b-icon icon="pencil-fill" font-scale="1.6"></b-icon>
+                        </b-badge>
+                        <b-badge variant="danger" class="mb-2 ml-2" v-if="message.UserId == userId" @click="supprMessage(message.id)">
+                            <b-icon icon="trash" font-scale="1.6"></b-icon>
                         </b-badge>
                     </div>
                 </div>
@@ -158,6 +163,7 @@ export default {
             })
         ).catch(erreur => console.log('erreur : ' + erreur));
         },
+
         //Update le like
         updateLike(messageId) {
             let tokenInfo = JSON.parse(this.sessionStorage[0])
@@ -184,6 +190,7 @@ export default {
                 })
             ).catch(erreur => console.log('erreur : ' + erreur));
         },
+
         //Update le message
         updateMessage(messageId) {
             let tokenInfo = JSON.parse(this.sessionStorage[0]);
@@ -215,6 +222,7 @@ export default {
                     })
                 ).catch(erreur => console.log('erreur : ' + erreur));
         },
+
         //Creer le message
         creerMessage() {
             let tokenInfo = JSON.parse(this.sessionStorage[0]);
@@ -242,6 +250,31 @@ export default {
                         this.creerAttachment=""
                         this.creerContent=""
                         this.$bvModal.hide(`creationModal`)
+                    })
+                ).catch(erreur => console.log('erreur : ' + erreur));
+        },
+
+        //Supprime le message
+        supprMessage(messageId) {
+            let tokenInfo = JSON.parse(this.sessionStorage[0]);
+            let requestOption = {
+                    method :"DELETE",
+                    mode: "cors",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${tokenInfo.token}`,
+                    },
+                    body : JSON.stringify({
+                        "userId":tokenInfo.userId,
+                        "messageId":messageId,
+                    })
+                }
+                fetch(this.urlApi.supprMessage, requestOption)
+                .then((reponse) => 
+                    reponse.json()
+                    .then((data) => {
+                        console.log(data);
+                        this.listMessageUpdate();
                     })
                 ).catch(erreur => console.log('erreur : ' + erreur));
         }
