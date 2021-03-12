@@ -7,6 +7,7 @@ const auth =require('../middleware/auth')
 //lier les routes au controllers
 router.post('/signup', userCtrl.signup);                    //C
 router.get('/profil', auth, userCtrl.profil);               //R
+router.get('/allProfil', auth, userCtrl.allProfil);         //R
 router.post('/login', userCtrl.login);                      //R
 router.put('/updateProfil', auth, userCtrl.updateProfil);   //U
 

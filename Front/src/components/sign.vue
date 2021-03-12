@@ -149,7 +149,6 @@
                 .then((data) => {
                     console.log(data.userId);
                     if(!data.userId){
-                        console.log(data);
                         this.makeToast('Mauvais e-mail et/ou mot de passe')
                     }else{
                         this.$store.commit("connexion", data);

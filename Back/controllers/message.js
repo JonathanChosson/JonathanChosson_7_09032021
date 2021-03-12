@@ -45,10 +45,6 @@ exports.listMessage = (req, res,  next) => {
         attributes: (fields !== '*' &&  fields != null) ? fields.split(',') : null,
         limit: (!isNaN(limit)) ? limit: null,
         offset: (!isNaN(offset)) ? offset : null,
-        include: [{
-            model: models.User,
-            attributes: ['userName']
-        }],
     }).then((message) => {
             for (i in message){
             async function liked(){

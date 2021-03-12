@@ -14,7 +14,10 @@ export default new Vuex.Store({
       "updateLike": "http://localhost:3000/api/messages/likeUpdate",
       "updateMessage": "http://localhost:3000/api/messages/update",
       "createMessage": "http://localhost:3000/api/messages/createMessage",
-      "supprMessage": "http://localhost:3000/api/messages/delete"
+      "supprMessage": "http://localhost:3000/api/messages/delete",
+      "allProfil": "http://localhost:3000/api/auth/allProfil",
+      "profil":"http://localhost:3000/api/auth/profil",
+      "updateProfil": "http://localhost:3000/api/auth/updateProfil"
     },
     logged: false
   },
@@ -25,6 +28,11 @@ export default new Vuex.Store({
     },
     update(state){
       state.logged = true;
+    },
+    deconnexion(state){
+      state.logged = false;
+      sessionStorage.clear();
+      location.reload();
     }
   },
   actions: {

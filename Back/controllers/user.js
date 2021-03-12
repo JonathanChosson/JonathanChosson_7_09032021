@@ -18,7 +18,8 @@ exports.signup = (req, res, next) => {
                     userName: req.body.userName,
                     password: hash,
                     bio: req.body.bio,
-                    isAdmin: 0
+                    isAdmin: 0,
+                    photo:""
                     })
                     .then((user) => res.status(201).json({ 'message': "utilisateur créee" }))
                     .catch(error => res.status(400).json({ error }));
@@ -69,9 +70,33 @@ exports.login = (req,res,next) => {
 
 // Route profil /api/auth/profil
 exports.profil = (req, res, next) => {
+    let userId = "";
+    if (req.body.userId === undefined){
+        userId = req.headers.userid;
+    }else {
+        userId = req.body.userId;
+    }
     models.User.findOne({
-        attributes: ['email', 'userName', 'bio'],
-        where: {id : req.body.userId}
+        attributes: ['id','email', 'userName', 'bio', 'photo'],
+        where: {id : userId}
+    })
+    .then(user =>{
+        if (!user) {
+            return res.status(401).json({error : 'Utilisateur non trouvé !'});
+        }
+        else{
+            res.status(200).json({ user });
+        }
+    })
+    .catch(function(err){
+        return res.status(500).json({ 'error': err});
+    })
+};
+
+// Route profil /api/auth/allProfil
+exports.allProfil = (req, res, next) => {
+    models.User.findAll({
+        attributes: ['id', 'userName', 'photo'],
     })
     .then(user =>{
         if (!user) {
@@ -91,7 +116,8 @@ exports.updateProfil = (req, res, next) => {
     console.log(req.body.bio);
     models.User.update({
         bio: req.body.bio,
-        userName: req.body.userName
+        userName: req.body.userName,
+        photo: req.body.photo,
         },
         {where : {id : req.body.userId}}
     )
