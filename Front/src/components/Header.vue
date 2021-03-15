@@ -16,7 +16,7 @@
                 <b-nav-item class="align-self-center" @click="deconnexion()"><p class="text-white">Deconnexion</p></b-nav-item>
             </b-navbar-nav>
         </b-collapse>
-    </b-navbar>{{userInfo}}
+    </b-navbar>
     <!-- modification modal -->
     <Modal :modalId='"modif-user-modal"' modalTitle="Modification de mon compte">
                 <template v-slot:bodyModal>
@@ -65,6 +65,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import Modal from './Modal'
 
 export default {
@@ -87,6 +88,7 @@ export default {
     },
     computed: {
         ...mapState(['sessionStorage','urlApi','logged']),
+        ...mapGetters({myState: 'getMyState'}),
     },
     methods:{
         //Update le Profil
@@ -147,26 +149,47 @@ export default {
             this.$store.commit("deconnexion")
         }
     },
-    beforeMount: function(){
-        let tokenInfo = JSON.parse(this.sessionStorage[0])
-        console.log(tokenInfo.userId);
-        let requestOption = {
-                method :"GET",
-                mode: "cors",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${tokenInfo.token}`,
-                    "userId": tokenInfo.userId,
-                }
+    watch: {
+        '$store.state.sessionStorage': function() {
+            let tokenInfo = JSON.parse(this.$store.getters.getMyState[0])
+            let requestOption = {
+                    method :"GET",
+                    mode: "cors",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${tokenInfo.token}`,
+                        "userId": tokenInfo.userId,
+                    }
+            }
+            fetch(this.urlApi.profil, requestOption)
+            .then((reponse) => 
+                reponse.json()
+                .then((data) => {
+                    this.userInfo = data;
+                })
+            ).catch(erreur => console.log('erreur : ' + erreur));
         }
-        fetch(this.urlApi.profil, requestOption)
-        .then((reponse) => 
-            reponse.json()
-            .then((data) => {
-                this.userInfo = data;
-            })
-        ).catch(erreur => console.log('erreur : ' + erreur));
     },
+    // mounted: function(){
+    //         let tokenInfo = JSON.parse(this.$store.getters.getMyState[0])
+    //         console.log(tokenInfo.userId);
+    //         let requestOption = {
+    //                 method :"GET",
+    //                 mode: "cors",
+    //                 headers: { 
+    //                     "Content-Type": "application/json",
+    //                     "Authorization": `Bearer ${tokenInfo.token}`,
+    //                     "userId": tokenInfo.userId,
+    //                 }
+    //         }
+    //         fetch(this.urlApi.profil, requestOption)
+    //         .then((reponse) => 
+    //             reponse.json()
+    //             .then((data) => {
+    //                 this.userInfo = data;
+    //             })
+    //         ).catch(erreur => console.log('erreur : ' + erreur));
+    // },
 }
 </script>
 <style>

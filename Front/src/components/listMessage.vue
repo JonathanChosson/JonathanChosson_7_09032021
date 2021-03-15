@@ -277,7 +277,7 @@ export default {
                         this.listMessageUpdate();
                     })
                 ).catch(erreur => console.log('erreur : ' + erreur));
-        }
+        },
     },
     mounted: function(){
         let tokenInfo = JSON.parse(this.sessionStorage[0])
@@ -297,7 +297,6 @@ export default {
             .then((data) => {
                 this.listMessage = data;
                 this.userId = tokenInfo.userId;
-                console.log(this.listMessage.message);
             })
         ).catch(erreur => console.log('erreur : ' + erreur));
     },

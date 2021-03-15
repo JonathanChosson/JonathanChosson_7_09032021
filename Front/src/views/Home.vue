@@ -1,6 +1,7 @@
 <template>
   <div>
     <Header></Header>
+    {{logged}}
     <Sign v-if="!logged"></Sign>
     <ListMessage v-else></ListMessage>
   </div>

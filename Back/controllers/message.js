@@ -71,7 +71,7 @@ exports.listMessage = (req, res,  next) => {
         }
         setTimeout(function(){
             res.status(200).json({ 'message': message});
-        }, 1000);
+        }, 200);
     }).catch((err) => {
         res.status(500).json({ err });
     })

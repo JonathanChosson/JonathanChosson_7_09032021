@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    sessionStorage : window.sessionStorage,
+    sessionStorage : "",
     urlApi:
     {
       "connexion" : "http://localhost:3000/api/auth/login",
@@ -24,6 +24,7 @@ export default new Vuex.Store({
   mutations: {
     connexion(state, data){
       state.logged = true;
+      state.sessionStorage = window.sessionStorage
       state.sessionStorage.setItem(0, JSON.stringify(data));
     },
     update(state){
@@ -39,6 +40,9 @@ export default new Vuex.Store({
   },
   modules: {
   },
+  getters : {
+    getMyState: state => state.sessionStorage
+  }
 })
 
 
