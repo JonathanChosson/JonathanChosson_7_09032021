@@ -27,8 +27,10 @@ export default new Vuex.Store({
       state.sessionStorage = window.sessionStorage
       state.sessionStorage.setItem(0, JSON.stringify(data));
     },
-    update(state){
+    update(state, data){
       state.logged = true;
+      state.sessionStorage = window.sessionStorage
+      state.sessionStorage.setItem(0, JSON.stringify(data));
     },
     deconnexion(state){
       state.logged = false;

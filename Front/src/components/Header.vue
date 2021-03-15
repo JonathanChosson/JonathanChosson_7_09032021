@@ -169,27 +169,7 @@ export default {
                 })
             ).catch(erreur => console.log('erreur : ' + erreur));
         }
-    },
-    // mounted: function(){
-    //         let tokenInfo = JSON.parse(this.$store.getters.getMyState[0])
-    //         console.log(tokenInfo.userId);
-    //         let requestOption = {
-    //                 method :"GET",
-    //                 mode: "cors",
-    //                 headers: { 
-    //                     "Content-Type": "application/json",
-    //                     "Authorization": `Bearer ${tokenInfo.token}`,
-    //                     "userId": tokenInfo.userId,
-    //                 }
-    //         }
-    //         fetch(this.urlApi.profil, requestOption)
-    //         .then((reponse) => 
-    //             reponse.json()
-    //             .then((data) => {
-    //                 this.userInfo = data;
-    //             })
-    //         ).catch(erreur => console.log('erreur : ' + erreur));
-    // },
+    }
 }
 </script>
 <style>
