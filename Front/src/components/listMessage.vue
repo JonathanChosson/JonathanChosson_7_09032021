@@ -70,9 +70,14 @@
                         <b-badge variant="info" class="mb-2" v-if="message.UserId == userId" v-b-modal="'my-modal('+(message.id)+')'">
                             <b-icon icon="pencil-fill" font-scale="1.6"></b-icon>
                         </b-badge>
-                        <b-badge variant="danger" class="mb-2 ml-2" v-if="message.UserId == userId" @click="supprMessage(message.id)">
+                        <b-badge variant="danger" class="mb-2 ml-2" v-if="message.UserId == userId" v-b-toggle="'collapse-2'">
                             <b-icon icon="trash" font-scale="1.6"></b-icon>
                         </b-badge>
+                        <b-collapse id="collapse-2">
+                                <b-card>
+                                    Confirmer la suppresion ? <b-button variant="danger" @click="supprMessage(message.id)"> Confirmer !</b-button>
+                                </b-card>
+                        </b-collapse>
                     </div>
                 </div>
             </div>

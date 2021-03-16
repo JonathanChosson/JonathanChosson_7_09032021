@@ -58,6 +58,12 @@
                         ></b-form-textarea>
                         </b-form-group>
                     </b-form>
+                    <b-button type="submit" variant="danger" v-b-toggle="'collapse-1'"  class="mb-2">Suprimer mon compte</b-button>
+                    <b-collapse id="collapse-1">
+                                <b-card>
+                                    Confirmer la suppresion ? <b-button variant="danger" @click="supprProfil(userInfo.user.id)" > Confirmer !</b-button>
+                                </b-card>
+                    </b-collapse>
                 </template>
                 <template v-slot:button>
                     <b-button type="submit" variant="success" @click="updateProfil()">Modifier</b-button>
@@ -136,6 +142,28 @@ export default {
                         // this.modifPhoto=""
                         this.modifBio="";
                         this.$bvModal.hide(`modif-user-modal`);
+                    })
+                ).catch(erreur => console.log('erreur : ' + erreur));
+        },
+        //Supression du profil 
+        supprProfil(userId) {
+            let tokenInfo = JSON.parse(this.sessionStorage[0]);
+            let requestOption = {
+                    method :"DELETE",
+                    mode: "cors",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${tokenInfo.token}`,
+                    },
+                    body : JSON.stringify({
+                        "userId":userId
+                    })
+                }
+                fetch(this.urlApi.supprProfil, requestOption)
+                .then((reponse) => 
+                    reponse.json()
+                    .then(() => {
+                        this.deconnexion();
                     })
                 ).catch(erreur => console.log('erreur : ' + erreur));
         },

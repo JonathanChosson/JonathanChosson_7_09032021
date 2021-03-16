@@ -17,7 +17,8 @@ export default new Vuex.Store({
       "supprMessage": "http://localhost:3000/api/messages/delete",
       "allProfil": "http://localhost:3000/api/auth/allProfil",
       "profil":"http://localhost:3000/api/auth/profil",
-      "updateProfil": "http://localhost:3000/api/auth/updateProfil"
+      "updateProfil": "http://localhost:3000/api/auth/updateProfil",
+      "supprProfil": "http://localhost:3000/api/auth/delete",
     },
     logged: false
   },
