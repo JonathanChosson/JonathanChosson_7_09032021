@@ -20,7 +20,7 @@
     <!-- modification modal -->
     <Modal :modalId='"modif-user-modal"' modalTitle="Modification de mon compte">
                 <template v-slot:bodyModal>
-                    <b-form >
+                    <b-form id="form">
                         <b-form-group
                             label-for="userName"
                         >Mon Pseudo
@@ -33,13 +33,17 @@
                         </b-form-group>
                         <b-form-group
                             label-for="photo"
-                        >Ma Photo
-                        <b-form-input
+                        >Ma Photo actuelle : 
+                        <!-- <b-form-input
                             id="photo"
                             type="text"
                             :placeholder =  userInfo.user.photo
                             v-model="modifPhoto"
-                        ></b-form-input>
+                        ></b-form-input> -->
+                        <b-avatar v-if="!userInfo.user.photo"></b-avatar>
+                        <b-avatar v-else :src="userInfo.user.photo"></b-avatar>
+                        <b-form-file id="file" v-model="file1" class="mt-3" type="file" plain></b-form-file>
+                        <div class="mt-3">Fichier Choisi: {{ file1 ? file1.name : '' }}</div>
                         </b-form-group>
                         <b-form-group
                             label-for="bio"
@@ -80,7 +84,8 @@ export default {
             },
             modifUserName:"",
             modifBio:"",
-            modifPhoto:""
+            // modifPhoto:"",
+            file1: null,
         }
     },
     components:{
@@ -96,31 +101,40 @@ export default {
             let tokenInfo = JSON.parse(this.sessionStorage[0]);
             let userSend = this.modifUserName ? this.modifUserName : this.userInfo.user.userName;
             let bioSend = this.modifBio ? this.modifBio : this.userInfo.user.bio;
-            let photoSend = this.modifPhoto ? this.modifPhoto : this.userInfo.user.photo;
+            // let photoSend = this.modifPhoto ? this.modifPhoto : this.userInfo.user.photo;
+            let sendInfo = 
+            JSON.stringify({
+                        "userId":tokenInfo.userId,
+                        "userName": userSend,
+                        "photo": this.userInfo.user.photo,
+                        "bio": bioSend 
+            });
+            const formData = new FormData();
+            formData.append('file', this.file1);
+            formData.append('info', sendInfo)
+            
             let requestOption = {
                     method :"PUT",
                     mode: "cors",
                     headers: { 
-                        "Content-Type": "application/json",
+                        // "Content-Type": "application/json",
                         "Authorization": `Bearer ${tokenInfo.token}`,
+                        "userId": tokenInfo.userId,
                     },
-                    body : JSON.stringify({
-                        "userId":tokenInfo.userId,
-                        "userName": userSend,
-                        "photo": photoSend,
-                        "bio": bioSend
-                    })
+                    body : formData
+                    
                 }
+            console.log(requestOption);
                 fetch(this.urlApi.updateProfil, requestOption)
                 .then((reponse) => 
                     reponse.json()
                     .then((data) => {
                         console.log(data);
                         this.getUser();
-                        this.modifUserName = ""
-                        this.modifPhoto=""
-                        this.modifBio=""
-                        this.$bvModal.hide(`modif-user-modal`)
+                        this.modifUserName = "";
+                        // this.modifPhoto=""
+                        this.modifBio="";
+                        this.$bvModal.hide(`modif-user-modal`);
                     })
                 ).catch(erreur => console.log('erreur : ' + erreur));
         },

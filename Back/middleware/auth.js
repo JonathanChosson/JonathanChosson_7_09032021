@@ -7,7 +7,6 @@ if (req.body.userId === undefined){
 }else {
     userIn = req.body.userId;
 }
-console.log(userIn);
     try {
         const token = req.headers.authorization.split(' ')[1];
         const decodedToken = jwt.verify(token, 'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTYxMTczOTYwMSwiaWF0IjoxNjExNzM5NjAxfQ.g-hcbPqOZ5DyWdeluvb0y1_GK4nJ-dw_M4FCXqYfW7E');

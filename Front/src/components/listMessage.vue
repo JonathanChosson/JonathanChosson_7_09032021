@@ -47,7 +47,7 @@
                 <p class="card-title h5 font-weight-bold">{{message.title}}</p>
                 <blockquote class="blockquote">
                     <p class="mb-0">{{message.content}}</p>
-                    <footer class="blockquote-footer">Ecris par :<cite title="Source Title"> {{message.createdBy}}</cite></footer>
+                    <footer class="blockquote-footer">Ecrit par :<cite title="Source Title"> {{message.createdBy}}</cite></footer>
                 </blockquote>
                 <div class="d-flex justify-content-between align-self-center pl-1 pr-1">
                     <div class="m-0">
@@ -139,6 +139,7 @@ export default {
     },
     computed: {
         ...mapState(['sessionStorage','urlApi','logged']),
+        
     },
     methods:{
         // Met à jour la liste de tout les messages

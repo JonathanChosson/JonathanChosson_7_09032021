@@ -2,6 +2,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const models = require('../models');
+const fs = require('fs');
 
 // Enregistrement de l'utilisateur /api/auth/signup
 exports.signup = (req, res, next) => {
@@ -113,13 +114,23 @@ exports.allProfil = (req, res, next) => {
 
 // Route updateProfil /api/auth/updateProfil
 exports.updateProfil = (req, res, next) => {
-    console.log(req.body.bio);
+    nouvellesInfos = JSON.parse(req.body.info);
+    urlNouvelleImage = () => {
+        if(!req.file){
+            return nouvellesInfos.photo
+        }else{
+            const filename = nouvellesInfos.photo.split('/images/profil/')[1];
+            fs.unlink(`images/profil/${filename}`, () => {});
+            return `${req.protocol}://${req.get('host')}/images/profil/${req.file.filename}`
+        }
+    }
+    // req.file ? `${req.protocol}://${req.get('host')}/images/profil/${req.file.filename}` : nouvellesInfos.photo;
     models.User.update({
-        bio: req.body.bio,
-        userName: req.body.userName,
-        photo: req.body.photo,
+        bio: nouvellesInfos.bio,
+        userName: nouvellesInfos.userName,
+        photo: urlNouvelleImage() ,
         },
-        {where : {id : req.body.userId}}
+        {where : {id : req.headers.userid}}
     )
     .then(function(userId){
             console.log('utilisateur Modifié');
@@ -136,36 +147,30 @@ exports.updateProfil = (req, res, next) => {
         console.log('utilisateur non modifié');
         return res.status(500).json({ 'error': err});
     })
-
-
-
-    // models.User.findOne({
-    //     where: {id : req.body.userId}
-    // })
-    // .then(user =>{
-    //     if (!user) {
-    //         return res.status(401).json({error : 'Utilisateur non trouvé !'});
-    //     }
-    //     else{
-    //         console.log(user);
-    //         user.update({
-    //             bio: req.body.bio,
-    //             userName: req.body.userName
-    //         }
-    //             )
-    //             .then(function(){
-    //             console.log(user.bio);
-    //             console.log('utilisateur Modifié');
-    //             res.status(201).json({ user });
-    //         }).catch(function(err){
-    //             console.log(user.bio);
-    //             console.log('utilisateur non modifié');
-    //             return res.status(500).json({ 'error': err});
-    //         })
-    //     }
-    // })
-    // .catch(function(err){
-    //     console.log('.catch');
-    //     return res.status(500).json({ 'error': err});
-    // })
 };
+// route delete User /api/auth/delete
+exports.delete = (req,res,next) =>{
+    async function userFind(){
+        let reponse = await models.User.findOne({
+        where: {id: req.body.userId}
+    });
+        let data = await reponse;
+            return data;
+    };
+
+    async function destroy(){
+        let userFinded = await userFind();
+        if(userFinded == null){
+            res.status(404).json({ "Message": "Cet utilisateur n'existe plus" });
+        }else{
+            if (userFinded.dataValues.id === req.body.userId){
+            userFinded.destroy()
+            res.status(200).json({ 'Suppression': "Utilisateur supprimé"});
+            }else{
+            res.status(403).json({ "Message": "Vous n'etes pas en droit de faire ceci" });
+            }
+        }
+        
+    };
+    destroy()
+}
