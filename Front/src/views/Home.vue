@@ -31,7 +31,27 @@ export default {
         ...mapGetters({myState: 'getMyState'}),
   },
   methods:{
-    
+    majListe(){
+      console.log('MAJ LIST ');
+      let tokenInfo = JSON.parse(window.sessionStorage[0])
+      console.log(tokenInfo.userId);
+      let requestOption = {
+              method :"GET",
+              mode: "cors",
+              headers: { 
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${tokenInfo.token}`,
+                  "userId": tokenInfo.userId,
+              }
+      }
+      fetch(this.urlApi.allProfil, requestOption)
+      .then((reponse) => 
+          reponse.json()
+          .then((data) => {
+              this.userList = data;
+          })
+      ).catch(erreur => console.log('erreur : ' + erreur));
+    }
   },
   watch: {
     '$store.state.sessionStorage': function() {

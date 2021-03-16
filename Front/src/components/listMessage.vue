@@ -47,7 +47,14 @@
                 <p class="card-title h5 font-weight-bold">{{message.title}}</p>
                 <blockquote class="blockquote">
                     <p class="mb-0">{{message.content}}</p>
-                    <footer class="blockquote-footer">Ecrit par :<cite title="Source Title"> {{message.createdBy}}</cite></footer>
+                    <footer class="blockquote-footer">
+                        Ecrit par :
+                        <cite title="Source Title">
+                            <b-avatar v-if="!infobulleCreateur(message.UserId).photo"></b-avatar>
+                            <b-avatar v-else :src="infobulleCreateur(message.UserId).photo"></b-avatar>
+                            {{infobulleCreateur(message.UserId).userName}} 
+                        </cite>
+                    </footer>
                 </blockquote>
                 <div class="d-flex justify-content-between align-self-center pl-1 pr-1">
                     <div class="m-0">
@@ -139,7 +146,6 @@ export default {
     },
     computed: {
         ...mapState(['sessionStorage','urlApi','logged']),
-        
     },
     methods:{
         // Met à jour la liste de tout les messages
@@ -279,6 +285,13 @@ export default {
                     })
                 ).catch(erreur => console.log('erreur : ' + erreur));
         },
+        //affiche les infos du créateur du message
+        infobulleCreateur(userId){
+            function user(user){
+                return user.id === userId
+            }
+            return this.$parent.userList.user.find(user)
+        }
     },
     mounted: function(){
         let tokenInfo = JSON.parse(this.sessionStorage[0])

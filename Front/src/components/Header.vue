@@ -130,6 +130,7 @@ export default {
                     reponse.json()
                     .then((data) => {
                         console.log(data);
+                        this.$parent.majListe();
                         this.getUser();
                         this.modifUserName = "";
                         // this.modifPhoto=""
@@ -138,6 +139,7 @@ export default {
                     })
                 ).catch(erreur => console.log('erreur : ' + erreur));
         },
+        //Avoir les infos de l'User connecté 
         getUser(){
             let tokenInfo = JSON.parse(this.sessionStorage[0])
         console.log(tokenInfo.userId);
