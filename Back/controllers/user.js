@@ -12,7 +12,9 @@ exports.signup = (req, res, next) => {
     })
     .then(function(userFound){
         if (!userFound){
-            bcrypt.hash(req.body.password, 10)
+            if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(req.body.email))
+            {
+                bcrypt.hash(req.body.password, 10)
             .then(hash => {
                     const user = models.User.create({
                     email: req.body.email,
@@ -25,6 +27,10 @@ exports.signup = (req, res, next) => {
                     .then((user) => res.status(201).json({ 'message': "utilisateur créee" }))
                     .catch(error => res.status(400).json({ error }));
             })
+            }else{
+                return res.status(409).json({'erreur': 'Adresse Mail incorecte'})
+            }
+            
         }else{
             return res.status(409).json({'erreur': 'utilisateur déjà existant'})
         }
