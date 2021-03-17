@@ -11,7 +11,7 @@ router.get('/profil', auth, userCtrl.profil);                       //R
 router.get('/allProfil', auth, userCtrl.allProfil);                 //R
 router.post('/login', userCtrl.login);                              //R
 router.put('/updateProfil', auth, multer, userCtrl.updateProfil);   //U
-router.delete('/delete', auth, userCtrl.delete);                    //U
+router.delete('/delete', auth, userCtrl.delete);                    //D
 
 
 module.exports = router;

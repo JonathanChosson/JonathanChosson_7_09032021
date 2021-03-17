@@ -13,16 +13,19 @@
                         id="title"
                         type="text"
                         v-model="creerTitle"
+                        required
                     ></b-form-input>
                     </b-form-group>
                     <b-form-group
                         label-for="attachment"
-                    >Medias
-                    <b-form-input
+                    >Photo (jpg, png, gif)
+                    <!-- <b-form-input
                         id="attachment"
                         type="text"
                         v-model="creerAttachment"
-                    ></b-form-input>
+                    ></b-form-input> -->
+                        <b-form-file id="file" v-model="fileCreate" class="mt-3" type="file" plain></b-form-file>
+                        <div class="mt-3">Fichier Choisi : {{ fileCreate ? fileCreate.name : '' }}</div>
                     </b-form-group>
                     <b-form-group
                         label-for="content"
@@ -33,6 +36,7 @@
                         rows="3"
                         max-rows="6"
                         v-model="creerContent"
+                        required
                     ></b-form-textarea>
                     </b-form-group>
                 </b-form>
@@ -97,13 +101,16 @@
                         </b-form-group>
                         <b-form-group
                             label-for="attachment"
-                        >Medias
-                        <b-form-input
+                        >Photo Actuelle<br/>
+                        <!-- <b-form-input
                             id="attachment"
                             type="text"
                             :placeholder = message.attachment
                             v-model="modifAttachment"
-                        ></b-form-input>
+                        ></b-form-input> -->
+                        <img :src="message.attachment" class="card-img-top modif_img" alt="">
+                        <b-form-file id="file" v-model="fileModif" class="mt-3" type="file" plain></b-form-file>
+                        <div class="mt-3">Fichier Choisi : {{ fileModif ? fileModif.name : '' }}</div>
                         </b-form-group>
                         <b-form-group
                             label-for="content"
@@ -143,7 +150,9 @@ export default {
             modifContent:"",
             creerTitle:"",
             creerAttachment:"",
-            creerContent:""
+            creerContent:"",
+            fileCreate: null,
+            fileModif : null
         }
     },
     components: {
@@ -206,20 +215,27 @@ export default {
         //Update le message
         updateMessage(messageId) {
             let tokenInfo = JSON.parse(this.sessionStorage[0]);
+            let sendInfo = 
+            JSON.stringify({
+                        "userId":tokenInfo.userId,
+                        "messageId":messageId,
+                        "title": this.modifTitle,
+                        "attachment": "",
+                        "content": this.modifContent
+                    });
+            const formData = new FormData();
+            formData.append('file', this.fileModif);
+            formData.append('info', sendInfo)
+
             let requestOption = {
                     method :"PUT",
                     mode: "cors",
                     headers: { 
-                        "Content-Type": "application/json",
+                        // "Content-Type": "application/json",
                         "Authorization": `Bearer ${tokenInfo.token}`,
+                        "userId": tokenInfo.userId,
                     },
-                    body : JSON.stringify({
-                        "userId":tokenInfo.userId,
-                        "messageId":messageId,
-                        "title": this.modifTitle,
-                        "attachment": this.modifAttachment,
-                        "content": this.modifContent
-                    })
+                    body : formData
                 }
                 fetch(this.urlApi.updateMessage, requestOption)
                 .then((reponse) => 
@@ -230,6 +246,7 @@ export default {
                         this.modifTitle = ""
                         this.modifAttachment=""
                         this.modifContent=""
+                        this.fileModif= null;
                         this.$bvModal.hide(`my-modal(${messageId})`)
                     })
                 ).catch(erreur => console.log('erreur : ' + erreur));
@@ -238,19 +255,26 @@ export default {
         //Creer le message
         creerMessage() {
             let tokenInfo = JSON.parse(this.sessionStorage[0]);
+            let sendInfo = 
+            JSON.stringify({
+                        "userId":tokenInfo.userId,
+                        "title": this.creerTitle,
+                        "photo":"",
+                        "content": this.creerContent
+            });
+            const formData = new FormData();
+            formData.append('file', this.fileCreate);
+            formData.append('info', sendInfo)
+
             let requestOption = {
                     method :"POST",
                     mode: "cors",
                     headers: { 
-                        "Content-Type": "application/json",
+                        // "Content-Type": "application/json",
                         "Authorization": `Bearer ${tokenInfo.token}`,
+                        "userId": tokenInfo.userId,
                     },
-                    body : JSON.stringify({
-                        "userId":tokenInfo.userId,
-                        "title": this.creerTitle,
-                        "attachment": this.creerAttachment,
-                        "content": this.creerContent
-                    })
+                    body : formData
                 }
                 fetch(this.urlApi.createMessage, requestOption)
                 .then((reponse) => 
@@ -259,8 +283,9 @@ export default {
                         console.log(data);
                         this.listMessageUpdate();
                         this.creerTitle = ""
-                        this.creerAttachment=""
+                        // this.creerAttachment=""
                         this.creerContent=""
+                        this.fileCreate = null;
                         this.$bvModal.hide(`creationModal`)
                     })
                 ).catch(erreur => console.log('erreur : ' + erreur));
@@ -324,3 +349,9 @@ export default {
     }
 }
 </script>
+
+<style>
+.modif_img{
+    max-width: 150px;
+}
+</style>

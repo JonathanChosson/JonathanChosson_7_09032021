@@ -114,6 +114,7 @@ exports.allProfil = (req, res, next) => {
 
 // Route updateProfil /api/auth/updateProfil
 exports.updateProfil = (req, res, next) => {
+    console.log(req.body);
     nouvellesInfos = JSON.parse(req.body.info);
     urlNouvelleImage = () => {
         if(!req.file){
@@ -164,6 +165,8 @@ exports.delete = (req,res,next) =>{
             res.status(404).json({ "Message": "Cet utilisateur n'existe plus" });
         }else{
             if (userFinded.dataValues.id === req.body.userId){
+                const filename = userFinded.dataValues.photo.split('/images/profil/')[1];
+            fs.unlink(`images/profil/${filename}`, () => {});
             userFinded.destroy()
             res.status(200).json({ 'Suppression': "Utilisateur supprimé"});
             }else{

@@ -1,20 +1,29 @@
 //import des modules et fichiers complémentaires
 const models = require('../models');
+const fs = require('fs');
 
 // Enregistrement de l'utilisateur /api/messages/createMessage
 exports.createMessage = (req, res, next) => {
-    console.log(req.body);
+    nouvellesInfosMessage = JSON.parse(req.body.info);
+    urlNouvelleImage = () => {
+        if(!req.file){
+            return nouvellesInfosMessage.photo = "https://loremflickr.com/320/240"
+        }else{
+            return nouvellesInfosMessage.photo = `${req.protocol}://${req.get('host')}/images/messages/${req.file.filename}`
+        }
+    }
+    urlNouvelleImage();
     models.User.findOne({
         attributes: ['userName'],
-        where: {id : req.body.userId}
+        where: {id : nouvellesInfosMessage.userId}
     })
     .then(function(userFound){
             models.Message.create({
-            title: req.body.title,
-            content: req.body.content,
-            attachment: req.body.attachment,
+            title: nouvellesInfosMessage.title,
+            content: nouvellesInfosMessage.content,
+            attachment: nouvellesInfosMessage.photo,
             likes: 0,
-            UserId: req.body.userId,
+            UserId: nouvellesInfosMessage.userId,
             createdBy: userFound.userName
         })
         .then((message) => res.status(201).json({ 'message': message }))
@@ -23,9 +32,6 @@ exports.createMessage = (req, res, next) => {
     .catch(function(err){
         return res.status(500).json({ 'error': err});
     })
-
-
-    
 };
 
 // Retourne Liste de message /api/messages/listMessage
@@ -159,19 +165,32 @@ exports.likeUpdate = (req, res, next) => {
 
 // Route Update /api/messages/update
 exports.update = (req, res ,next) => {
+    nouvellesInfos = JSON.parse(req.body.info);
     models.Message.findOne({
-        where: {id : req.body.messageId}
+        where: {id : nouvellesInfos.messageId}
     })
     .then(messageFind =>{
-            let title = req.body.title ? req.body.title : messageFind.dataValues.title ;
-            let content = req.body.content ? req.body.content : messageFind.dataValues.content;
-            let attachment = req.body.attachment ? req.body.attachment : messageFind.dataValues.attachment;
+        console.log(messageFind.dataValues);
+            let titleNew = nouvellesInfos.title ? nouvellesInfos.title : messageFind.dataValues.title ;
+            let contentNew = nouvellesInfos.content ? nouvellesInfos.content : messageFind.dataValues.content;
+            urlNouvelleImage = () => {
+                if(!req.file){
+                    return  messageFind.dataValues.attachment
+                }else{
+                    const filename = messageFind.dataValues.attachment.split('/images/messages/')[1];
+                    fs.unlink(`images/messages/${filename}`, () => {});
+                    return `${req.protocol}://${req.get('host')}/images/messages/${req.file.filename}`
+                }
+            }
+            console.log(titleNew);
+            console.log(contentNew);
+            console.log(urlNouvelleImage());
             models.Message.update({
-                title,
-                content,
-                attachment
+                title: titleNew,
+                content : contentNew,
+                attachment : urlNouvelleImage()
                 },
-                {where : {id : req.body.messageId}}
+                {where : {id : nouvellesInfos.messageId}}
             )
             .then(function(){
                     console.log('message Modifié');
@@ -180,11 +199,11 @@ exports.update = (req, res ,next) => {
             })
             .catch(function(err){
                 console.log('message non modifié');
-                return res.status(500).json({ 'error': err});
+                return res.status(501).json({ 'error': err});
             })
     })
     .catch(function(err){
-        return res.status(500).json({ 'error': err});
+        return res.status(500).json({ 'errorFind': err});
     })
 }
 
@@ -204,6 +223,9 @@ exports.delete = (req,res,next) =>{
             res.status(404).json({ "Message": "Ce contenu n'existe plus" });
         }else{
             if (messageFinded.dataValues.UserId === req.body.userId){
+            console.log(messageFinded.dataValues.attachment);
+            const filename = messageFinded.dataValues.attachment.split('/images/messages/')[1];
+            fs.unlink(`images/messages/${filename}`, () => {});
             messageFinded.destroy()
             res.status(200).json({ 'Suppression': "Message supprimé"});
         }else{

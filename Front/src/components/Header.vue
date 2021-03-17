@@ -43,7 +43,7 @@
                         <b-avatar v-if="!userInfo.user.photo"></b-avatar>
                         <b-avatar v-else :src="userInfo.user.photo"></b-avatar>
                         <b-form-file id="file" v-model="file1" class="mt-3" type="file" plain></b-form-file>
-                        <div class="mt-3">Fichier Choisi: {{ file1 ? file1.name : '' }}</div>
+                        <div class="mt-3">Fichier Choisi : {{ file1 ? file1.name : '' }}</div>
                         </b-form-group>
                         <b-form-group
                             label-for="bio"
@@ -141,6 +141,7 @@ export default {
                         this.modifUserName = "";
                         // this.modifPhoto=""
                         this.modifBio="";
+                        this.file1= null;
                         this.$bvModal.hide(`modif-user-modal`);
                     })
                 ).catch(erreur => console.log('erreur : ' + erreur));
