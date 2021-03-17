@@ -7,6 +7,7 @@
         <div class="d-flex justify-content-between align-self-center pl-1 pr-1">
             <b-button type="submit" variant="warning" @click="hideModal">Annuler</b-button>
             <slot name="button"></slot>
+            
         </div>
     </b-modal>
     </div>

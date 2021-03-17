@@ -13,8 +13,11 @@
                         id="title"
                         type="text"
                         v-model="creerTitle"
-                        required
+                        :state="validation"
                     ></b-form-input>
+                    <b-form-invalid-feedback :state="validation">
+                        Vous devez ecrire un titre
+                    </b-form-invalid-feedback>
                     </b-form-group>
                     <b-form-group
                         label-for="attachment"
@@ -42,7 +45,8 @@
                 </b-form>
             </template>
             <template v-slot:button>
-                <b-button type="submit" variant="success" @click="creerMessage()">Creer message</b-button>
+                <b-button v-if="validation" type="submit" variant="success" @click="creerMessage()">Creer message</b-button>
+                <b-button v-else type="submit" variant="secondary" >Creer message</b-button>
             </template>
         </Modal>
         <div class="card mt-1"  v-for="(message) in listMessage.message" :key="message.id">
@@ -74,10 +78,10 @@
                         <b-badge variant="info" class="mb-2" v-if="message.UserId == userId" v-b-modal="'my-modal('+(message.id)+')'">
                             <b-icon icon="pencil-fill" font-scale="1.6"></b-icon>
                         </b-badge>
-                        <b-badge variant="danger" class="mb-2 ml-2" v-if="message.UserId == userId" v-b-toggle="'collapse-2'">
+                        <b-badge variant="danger" class="mb-2 ml-2" v-if="message.UserId == userId" v-b-toggle="'collapse-'+message.id">
                             <b-icon icon="trash" font-scale="1.6"></b-icon>
                         </b-badge>
-                        <b-collapse id="collapse-2">
+                        <b-collapse :id='"collapse-"+message.id'>
                                 <b-card>
                                     Confirmer la suppresion ? <b-button variant="danger" @click="supprMessage(message.id)"> Confirmer !</b-button>
                                 </b-card>
@@ -160,6 +164,10 @@ export default {
     },
     computed: {
         ...mapState(['sessionStorage','urlApi','logged']),
+        // Validation de champs 
+        validation() {
+        return this.creerTitle.length > 4
+        },
     },
     methods:{
         // Met à jour la liste de tout les messages
@@ -309,8 +317,7 @@ export default {
                 fetch(this.urlApi.supprMessage, requestOption)
                 .then((reponse) => 
                     reponse.json()
-                    .then((data) => {
-                        console.log(data);
+                    .then(() => {
                         this.listMessageUpdate();
                     })
                 ).catch(erreur => console.log('erreur : ' + erreur));
