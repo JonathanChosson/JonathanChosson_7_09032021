@@ -20,7 +20,8 @@ export default new Vuex.Store({
       "updateProfil": "http://localhost:3000/api/auth/updateProfil",
       "supprProfil": "http://localhost:3000/api/auth/delete",
     },
-    logged: false
+    logged: false,
+    listUser:""
   },
   mutations: {
     connexion(state, data){
@@ -37,6 +38,9 @@ export default new Vuex.Store({
       state.logged = false;
       sessionStorage.clear();
       location.reload();
+    },
+    userList(state, data){
+      state.listUser = data
     }
   },
   actions: {

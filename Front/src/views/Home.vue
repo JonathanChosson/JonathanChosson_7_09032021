@@ -49,6 +49,7 @@ export default {
           reponse.json()
           .then((data) => {
               this.userList = data;
+              this.$store.commit("userList", data);
           })
       ).catch(erreur => console.log('erreur : ' + erreur));
     }
@@ -71,6 +72,7 @@ export default {
           reponse.json()
           .then((data) => {
               this.userList = data;
+              this.$store.commit("userList", data);
           })
       ).catch(erreur => console.log('erreur : ' + erreur));
       

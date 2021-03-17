@@ -45,7 +45,7 @@ exports.listMessage = (req, res,  next) => {
     let fields = req.query.fields;
     let limit = parseInt(req.query.limit);
     let offset = parseInt(req.query.offset);
-    let order = req.query.order;
+    let order = req.headers.order;
     models.Message.findAll({
         order: [(order != null) ? order.split(':') : ['id', 'DESC']],
         attributes: (fields !== '*' &&  fields != null) ? fields.split(',') : null,
@@ -182,9 +182,6 @@ exports.update = (req, res ,next) => {
                     return `${req.protocol}://${req.get('host')}/images/messages/${req.file.filename}`
                 }
             }
-            console.log(titleNew);
-            console.log(contentNew);
-            console.log(urlNouvelleImage());
             models.Message.update({
                 title: titleNew,
                 content : contentNew,

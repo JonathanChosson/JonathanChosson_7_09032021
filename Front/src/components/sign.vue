@@ -1,6 +1,6 @@
 <template>
     <!-- div connexion -->
-    <div class="container" >
+    <div class="container sign" >
         <div id="connection" class="border rounded border-info bg-info container mt-1 pb-1">
             <p class="text-white">
                 Se connecter
@@ -183,3 +183,18 @@
     }
     }
 </script>
+
+<style>
+.sign{
+    display: flex;
+    flex-flow: row wrap;
+}
+
+#connection{
+    max-width: 425px;
+}
+
+#inscription{
+    max-width: 425px;
+}
+</style>

@@ -1,96 +1,11 @@
 <template>
-    <div class="container d-flex flex-column">
-        <!-- <p v-for="(message) in listMessage.message" :key="message.id">{{message}}</p> -->
-        <h3 class="m-0" v-b-modal="'creationModal'"><span class="badge badge-secondary m-1">Ajouter un message <b-icon icon="pencil-square"></b-icon></span></h3>
-        <!-- modale de création -->
-        <Modal modalId='creationModal' modalTitle="Création d'un message">
-            <template v-slot:bodyModal>
-                <b-form >
-                    <b-form-group
-                        label-for="title"
-                    >Titre
-                    <b-form-input
-                        id="title"
-                        type="text"
-                        v-model="creerTitle"
-                        :state="validation"
-                    ></b-form-input>
-                    <b-form-invalid-feedback :state="validation">
-                        Vous devez ecrire un titre
-                    </b-form-invalid-feedback>
-                    </b-form-group>
-                    <b-form-group
-                        label-for="attachment"
-                    >Photo (jpg, png, gif)
-                    <!-- <b-form-input
-                        id="attachment"
-                        type="text"
-                        v-model="creerAttachment"
-                    ></b-form-input> -->
-                        <b-form-file id="file" v-model="fileCreate" class="mt-3" type="file" plain></b-form-file>
-                        <div class="mt-3">Fichier Choisi : {{ fileCreate ? fileCreate.name : '' }}</div>
-                    </b-form-group>
-                    <b-form-group
-                        label-for="content"
-                    >Message
-                    <b-form-textarea
-                        id="content"
-                        type="text"
-                        rows="3"
-                        max-rows="6"
-                        v-model="creerContent"
-                        required
-                    ></b-form-textarea>
-                    </b-form-group>
-                </b-form>
-            </template>
-            <template v-slot:button>
-                <b-button v-if="validation" type="submit" variant="success" @click="creerMessage()">Creer message</b-button>
-                <b-button v-else type="submit" variant="secondary" >Creer message</b-button>
-            </template>
-        </Modal>
-        <div class="card mt-1"  v-for="(message) in listMessage.message" :key="message.id">
-            <img :src="message.attachment" class="card-img-top" alt="">
-            <div class="card-body p-0 pt-1">
-                <p class="card-title h5 font-weight-bold">{{message.title}}</p>
-                <blockquote class="blockquote">
-                    <p class="mb-0">{{message.content}}</p>
-                    <footer class="blockquote-footer">
-                        Ecrit par :
-                        <cite title="Source Title">
-                            <b-avatar v-if="!infobulleCreateur(message.UserId).photo"></b-avatar>
-                            <b-avatar v-else :src="infobulleCreateur(message.UserId).photo"></b-avatar>
-                            {{infobulleCreateur(message.UserId).userName}} 
-                        </cite>
-                    </footer>
-                </blockquote>
-                <div class="d-flex justify-content-between align-self-center pl-1 pr-1">
-                    <div class="m-0">
-                        <b-badge variant="dark" class="mb-2" v-if="!message.liked" @click="updateLike(message.id)">
-                            <b-icon icon="hand-thumbs-up" font-scale="1.6"></b-icon>
-                        </b-badge>
-                        <b-badge variant="primary" class="mb-2" v-else @click="updateLike(message.id)">
-                            <b-icon icon="hand-thumbs-up" font-scale="1.6"></b-icon>
-                        </b-badge>
-                        <span class="h5"> {{message.likes}}</span>
-                    </div>
-                    <div class="m-0">
-                        <b-badge variant="info" class="mb-2" v-if="message.UserId == userId" v-b-modal="'my-modal('+(message.id)+')'">
-                            <b-icon icon="pencil-fill" font-scale="1.6"></b-icon>
-                        </b-badge>
-                        <b-badge variant="danger" class="mb-2 ml-2" v-if="message.UserId == userId" v-b-toggle="'collapse-'+message.id">
-                            <b-icon icon="trash" font-scale="1.6"></b-icon>
-                        </b-badge>
-                        <b-collapse :id='"collapse-"+message.id'>
-                                <b-card>
-                                    Confirmer la suppresion ? <b-button variant="danger" @click="supprMessage(message.id)"> Confirmer !</b-button>
-                                </b-card>
-                        </b-collapse>
-                    </div>
-                </div>
-            </div>
-            <!-- modale de modification -->
-            <Modal :modalId='"my-modal("+message.id+")"' modalTitle="Modification du message">
+    <div id="global" class="d-flex justify-content-center">
+        <CreateMessage class="d-none d-lg-block "></CreateMessage>
+        <div id="listMessage" class="container d-flex flex-column">
+            <!-- <p v-for="(message) in listMessage.message" :key="message.id">{{message}}</p> -->
+            <p class="m-0 h3" v-b-modal="'creationModal'"><span class="badge badge-secondary m-1">Ajouter un message <b-icon icon="pencil-square"></b-icon></span></p>
+            <!-- modale de création -->
+            <Modal modalId='creationModal' modalTitle="Création d'un message">
                 <template v-slot:bodyModal>
                     <b-form >
                         <b-form-group
@@ -99,22 +14,23 @@
                         <b-form-input
                             id="title"
                             type="text"
-                            :placeholder = message.title
-                            v-model="modifTitle"
+                            v-model="creerTitle"
+                            :state="validation"
                         ></b-form-input>
+                        <b-form-invalid-feedback :state="validation">
+                            Vous devez ecrire un titre
+                        </b-form-invalid-feedback>
                         </b-form-group>
                         <b-form-group
                             label-for="attachment"
-                        >Photo Actuelle<br/>
+                        >Photo (jpg, png, gif)
                         <!-- <b-form-input
                             id="attachment"
                             type="text"
-                            :placeholder = message.attachment
-                            v-model="modifAttachment"
+                            v-model="creerAttachment"
                         ></b-form-input> -->
-                        <img :src="message.attachment" class="card-img-top modif_img" alt="">
-                        <b-form-file id="file" v-model="fileModif" class="mt-3" type="file" plain></b-form-file>
-                        <div class="mt-3">Fichier Choisi : {{ fileModif ? fileModif.name : '' }}</div>
+                            <b-form-file id="file" v-model="fileCreate" class="mt-3" type="file" plain></b-form-file>
+                            <div class="mt-3">Fichier Choisi : {{ fileCreate ? fileCreate.name : '' }}</div>
                         </b-form-group>
                         <b-form-group
                             label-for="content"
@@ -122,26 +38,116 @@
                         <b-form-textarea
                             id="content"
                             type="text"
-                            :placeholder = message.content
                             rows="3"
                             max-rows="6"
-                            v-model="modifContent"
+                            v-model="creerContent"
+                            required
                         ></b-form-textarea>
                         </b-form-group>
                     </b-form>
                 </template>
                 <template v-slot:button>
-                    <b-button type="submit" variant="success" @click="updateMessage(message.id)">Modifier</b-button>
+                    <b-button v-if="validation" type="submit" variant="success" @click="creerMessage()">Creer message</b-button>
+                    <b-button v-else type="submit" variant="secondary" >Creer message</b-button>
                 </template>
             </Modal>
-            
+            <p class="m-0 h3" ><span class="badge badge-dark m-1">Dernier Messages </span></p>
+            <div class="card mt-1"  v-for="(message) in listMessage.message" :key="message.id">
+                <img :src="message.attachment" class="card-img-top" alt="">
+                <div class="card-body p-0 pt-1">
+                    <p class="card-title h5 font-weight-bold">{{message.title}}</p>
+                    <blockquote class="blockquote">
+                        <p class="mb-0">{{message.content}}</p>
+                        <footer class="blockquote-footer">
+                            Ecrit par :
+                            <cite title="Source Title">
+                                <b-avatar v-if="!infobulleCreateur(message.UserId).photo"></b-avatar>
+                                <b-avatar v-else :src="infobulleCreateur(message.UserId).photo"></b-avatar>
+                                {{infobulleCreateur(message.UserId).userName}} 
+                            </cite>
+                        </footer>
+                    </blockquote>
+                    <div class="d-flex justify-content-between align-self-center pl-1 pr-1">
+                        <div class="m-0">
+                            <b-badge variant="dark" class="mb-2" v-if="!message.liked" @click="updateLike(message.id)">
+                                <b-icon icon="hand-thumbs-up" font-scale="1.6"></b-icon>
+                            </b-badge>
+                            <b-badge variant="primary" class="mb-2" v-else @click="updateLike(message.id)">
+                                <b-icon icon="hand-thumbs-up" font-scale="1.6"></b-icon>
+                            </b-badge>
+                            <span class="h5"> {{message.likes}}</span>
+                        </div>
+                        <div class="m-0">
+                            <b-badge variant="info" class="mb-2" v-if="message.UserId == userId" v-b-modal="'my-modal('+(message.id)+')'">
+                                <b-icon icon="pencil-fill" font-scale="1.6"></b-icon>
+                            </b-badge>
+                            <b-badge variant="danger" class="mb-2 ml-2" v-if="message.UserId == userId" v-b-toggle="'collapse-'+message.id">
+                                <b-icon icon="trash" font-scale="1.6"></b-icon>
+                            </b-badge>
+                            <b-collapse :id='"collapse-"+message.id'>
+                                    <b-card>
+                                        Confirmer la suppresion ? <b-button variant="danger" @click="supprMessage(message.id)"> Confirmer !</b-button>
+                                    </b-card>
+                            </b-collapse>
+                        </div>
+                    </div>
+                </div>
+                <!-- modale de modification -->
+                <Modal :modalId='"my-modal("+message.id+")"' modalTitle="Modification du message">
+                    <template v-slot:bodyModal>
+                        <b-form >
+                            <b-form-group
+                                label-for="title"
+                            >Titre
+                            <b-form-input
+                                id="title"
+                                type="text"
+                                :placeholder = message.title
+                                v-model="modifTitle"
+                            ></b-form-input>
+                            </b-form-group>
+                            <b-form-group
+                                label-for="attachment"
+                            >Photo Actuelle<br/>
+                            <!-- <b-form-input
+                                id="attachment"
+                                type="text"
+                                :placeholder = message.attachment
+                                v-model="modifAttachment"
+                            ></b-form-input> -->
+                            <img :src="message.attachment" class="card-img-top modif_img" alt="">
+                            <b-form-file id="file" v-model="fileModif" class="mt-3" type="file" plain></b-form-file>
+                            <div class="mt-3">Fichier Choisi : {{ fileModif ? fileModif.name : '' }}</div>
+                            </b-form-group>
+                            <b-form-group
+                                label-for="content"
+                            >Message
+                            <b-form-textarea
+                                id="content"
+                                type="text"
+                                :placeholder = message.content
+                                rows="3"
+                                max-rows="6"
+                                v-model="modifContent"
+                            ></b-form-textarea>
+                            </b-form-group>
+                        </b-form>
+                    </template>
+                    <template v-slot:button>
+                        <b-button type="submit" variant="success" @click="updateMessage(message.id)">Modifier</b-button>
+                    </template>
+                </Modal>
+            </div>
         </div>
+        <Tendances class="d-none d-md-block "></Tendances>
     </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import Modal from './Modal'
+import Tendances from './Tendances'
+import CreateMessage from './CreateMessage'
 
 export default {
     name: 'listMessage',
@@ -160,7 +166,9 @@ export default {
         }
     },
     components: {
-        Modal
+        Modal,
+        Tendances,
+        CreateMessage
     },
     computed: {
         ...mapState(['sessionStorage','urlApi','logged']),
@@ -319,6 +327,7 @@ export default {
                     reponse.json()
                     .then(() => {
                         this.listMessageUpdate();
+                        this.listMessageUpdate();
                     })
                 ).catch(erreur => console.log('erreur : ' + erreur));
         },
@@ -360,5 +369,10 @@ export default {
 <style>
 .modif_img{
     max-width: 150px;
+}
+
+#listMessage{
+    max-width: 510px;
+    border: 1px solid black;
 }
 </style>
