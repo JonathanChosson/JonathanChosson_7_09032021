@@ -72,6 +72,7 @@ export default {
             reponse.json()
             .then((data) => {
                 this.tendancesMessage = data;
+                this.userId = tokenInfo.userId;
                 console.log(this.tendancesMessage.message);
             })
         ).catch(erreur => console.log('erreur : ' + erreur));
@@ -113,26 +114,7 @@ export default {
         }
     },
     mounted: function(){
-        let tokenInfo = JSON.parse(this.sessionStorage[0])
-        console.log(tokenInfo.userId);
-        let requestOption = {
-                method :"GET",
-                mode: "cors",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${tokenInfo.token}`,
-                    "userId": tokenInfo.userId,
-                    "order": "likes:DESC"
-                }
-        }
-        fetch(this.urlApi.listAllMessage, requestOption)
-        .then((reponse) => 
-            reponse.json()
-            .then((data) => {
-                this.tendancesMessage = data;
-                this.userId = tokenInfo.userId;
-            })
-        ).catch(erreur => console.log('erreur : ' + erreur));
+        this.tendancesMessageUpdate()
     },
 }
 </script>
