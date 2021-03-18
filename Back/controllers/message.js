@@ -34,7 +34,7 @@ exports.createMessage = (req, res, next) => {
     })
 };
 
-// Retourne Liste de message /api/messages/listMessage
+// Retourne Liste de message /api/messages/listMessage/params
 exports.listMessage = (req, res,  next) => {
         let userId = "";
     if (req.body.userId === undefined){

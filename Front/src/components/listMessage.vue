@@ -1,7 +1,7 @@
 <template>
     <div id="global" class="d-flex justify-content-center">
         <CreateMessage class="d-none d-lg-block "></CreateMessage>
-        <div id="listMessage" class="container d-flex flex-column">
+        <div id="listingMessage" class="container d-flex flex-column">
             <!-- <p v-for="(message) in listMessage.message" :key="message.id">{{message}}</p> -->
             <p class="m-0 h3" v-b-modal="'creationModal'"><span class="badge badge-secondary m-1">Ajouter un message <b-icon icon="pencil-square"></b-icon></span></p>
             <!-- modale de création -->
@@ -138,6 +138,9 @@
                     </template>
                 </Modal>
             </div>
+            <div class="m-3">
+                <b-spinner id="spinner" class="d-none ml-auto"></b-spinner>
+            </div>
         </div>
         <Tendances class="d-none d-md-block "></Tendances>
     </div>
@@ -162,7 +165,10 @@ export default {
             creerAttachment:"",
             creerContent:"",
             fileCreate: null,
-            fileModif : null
+            fileModif : null,
+            limit:3,
+            offset:0,
+            finTableau: false
         }
     },
     components: {
@@ -178,6 +184,21 @@ export default {
         },
     },
     methods:{
+        scroll(){
+            window.onscroll = () => {
+            let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+            let spinner = document.getElementById('spinner')
+            if (bottomOfWindow) {
+                if(this.finTableau === false){
+                    spinner.classList.remove('d-none');
+                console.log('Bas de page');
+                setTimeout( 
+                    this.chargerPlus
+                , 1000);
+                }
+            }
+        }
+        },
         // Met à jour la liste de tout les messages
         listMessageUpdate() {
             let tokenInfo = JSON.parse(this.sessionStorage[0])
@@ -191,13 +212,53 @@ export default {
                     "userId": tokenInfo.userId,
                 }
         }
-        fetch(this.urlApi.listAllMessage, requestOption)
+        fetch(`${this.urlApi.listAllMessage}?limit=${this.limit}`, requestOption)
         .then((reponse) => 
             reponse.json()
             .then((data) => {
                 this.listMessage = data;
                 this.userId = tokenInfo.userId;
-                console.log(this.listMessage.message);
+                this.offset = +this.limit;
+                this.finTableau = false
+            })
+        ).catch(erreur => console.log('erreur : ' + erreur));
+        },
+
+        chargerPlus() {
+            let tokenInfo = JSON.parse(this.sessionStorage[0])
+        let requestOption = {
+                method :"GET",
+                mode: "cors",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${tokenInfo.token}`,
+                    "userId": tokenInfo.userId,
+                }
+        }
+        fetch(`${this.urlApi.listAllMessage}?limit=${this.limit}&offset=${this.offset}`, requestOption)
+        .then((reponse) => 
+            reponse.json()
+            .then((data) => {
+                if(data.message.length > 0){
+                    let newMessage;
+                    for(newMessage in data.message){
+                        if(this.listMessage.message.some(message => message.id === data.message[newMessage].id)){
+                            this.finTableau = false
+                        } else{
+                            this.listMessage.message.push(data.message[newMessage]);
+                        }
+                    }
+                    this.userId = tokenInfo.userId;
+                    this.offset = this.listMessage.message.length;
+                    let spinner = document.getElementById('spinner');
+                    spinner.classList.add('d-none');
+                }
+                else{
+                    this.finTableau = true
+                    let spinner = document.getElementById('spinner');
+                    spinner.classList.add('d-none');
+                }
+                
             })
         ).catch(erreur => console.log('erreur : ' + erreur));
         },
@@ -342,6 +403,7 @@ export default {
     },
     mounted: function(){
         this.listMessageUpdate()
+        this.scroll()
     },
     watch: {
         
@@ -354,7 +416,7 @@ export default {
     max-width: 150px;
 }
 
-#listMessage{
+#listingMessage{
     max-width: 510px;
     border: 1px solid black;
 }
