@@ -32,9 +32,7 @@ export default {
   },
   methods:{
     majListe(){
-      console.log('MAJ LIST ');
       let tokenInfo = JSON.parse(window.sessionStorage[0])
-      console.log(tokenInfo.userId);
       let requestOption = {
               method :"GET",
               mode: "cors",
@@ -57,7 +55,6 @@ export default {
   watch: {
     '$store.state.sessionStorage': function() {
       let tokenInfo = JSON.parse(this.$store.getters.getMyState[0])
-      console.log(tokenInfo.userId);
       let requestOption = {
               method :"GET",
               mode: "cors",

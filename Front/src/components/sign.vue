@@ -147,7 +147,6 @@
             .then((reponse) => 
                 reponse.json()
                 .then((data) => {
-                    console.log(data.userId);
                     if(!data.userId){
                         this.makeToast('Mauvais e-mail et/ou mot de passe')
                     }else{
@@ -174,8 +173,7 @@
             fetch(this.urlApi.enregistrement, requestOption)
             .then((reponse) => 
                 reponse.json()
-                .then((data) => {
-                    console.log(data);
+                .then(() => {
                     this.connexion(this.signMail, this.signPassword)
                 })
             ).catch(erreur => console.log('erreur : ' + erreur));

@@ -55,8 +55,7 @@ export default {
     methods:{
         // Met à jour la liste de tout les messages
         tendancesMessageUpdate() {
-            let tokenInfo = JSON.parse(this.sessionStorage[0])
-        console.log(tokenInfo.userId);
+        let tokenInfo = JSON.parse(this.sessionStorage[0])
         let requestOption = {
                 method :"GET",
                 mode: "cors",
@@ -73,16 +72,13 @@ export default {
             .then((data) => {
                 this.tendancesMessage = data;
                 this.userId = tokenInfo.userId;
-                console.log(this.tendancesMessage.message);
             })
         ).catch(erreur => console.log('erreur : ' + erreur));
         },
 
         //Update le like
         updateLike(messageId) {
-            let tokenInfo = JSON.parse(this.sessionStorage[0])
-        console.log(tokenInfo.userId);
-        console.log(messageId);
+        let tokenInfo = JSON.parse(this.sessionStorage[0])
         let requestOption = {
                 method :"PUT",
                 mode: "cors",
@@ -98,8 +94,7 @@ export default {
             fetch(this.urlApi.updateLike, requestOption)
             .then((reponse) => 
                 reponse.json()
-                .then((data) => {
-                    console.log(data);
+                .then(() => {
                     this.$parent.listMessageUpdate()
                     this.tendancesMessageUpdate();
                 })

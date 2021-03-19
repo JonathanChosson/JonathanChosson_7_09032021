@@ -1,5 +1,6 @@
 <template>
     <div id="global" class="d-flex justify-content-center">
+        <!-- formulaire de création de message uniquement grand écran  -->
         <CreateMessage class="d-none d-lg-block "></CreateMessage>
         <div id="listingMessage" class="container d-flex flex-column">
             <!-- <p v-for="(message) in listMessage.message" :key="message.id">{{message}}</p> -->
@@ -24,11 +25,6 @@
                         <b-form-group
                             label-for="attachment"
                         >Photo (jpg, png, gif)
-                        <!-- <b-form-input
-                            id="attachment"
-                            type="text"
-                            v-model="creerAttachment"
-                        ></b-form-input> -->
                             <b-form-file id="file" v-model="fileCreate" class="mt-3" type="file" plain></b-form-file>
                             <div class="mt-3">Fichier Choisi : {{ fileCreate ? fileCreate.name : '' }}</div>
                         </b-form-group>
@@ -109,12 +105,6 @@
                             <b-form-group
                                 label-for="attachment"
                             >Photo Actuelle<br/>
-                            <!-- <b-form-input
-                                id="attachment"
-                                type="text"
-                                :placeholder = message.attachment
-                                v-model="modifAttachment"
-                            ></b-form-input> -->
                             <img :src="message.attachment" class="card-img-top modif_img" alt="">
                             <b-form-file id="file" v-model="fileModif" class="mt-3" type="file" plain></b-form-file>
                             <div class="mt-3">Fichier Choisi : {{ fileModif ? fileModif.name : '' }}</div>
@@ -142,6 +132,7 @@
                 <b-spinner id="spinner" class="d-none ml-auto"></b-spinner>
             </div>
         </div>
+        <!-- Div messages tendances uniquement à partir du format tablette -->
         <Tendances class="d-none d-md-block "></Tendances>
     </div>
 </template>
@@ -184,6 +175,7 @@ export default {
         },
     },
     methods:{
+        //surveille quand l'utilisateur est en bas de page
         scroll(){
             window.onscroll = () => {
             let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
@@ -191,7 +183,6 @@ export default {
             if (bottomOfWindow) {
                 if(this.finTableau === false){
                     spinner.classList.remove('d-none');
-                console.log('Bas de page');
                 setTimeout( 
                     this.chargerPlus
                 , 1000);
@@ -199,31 +190,8 @@ export default {
             }
         }
         },
-        // Met à jour la liste de tout les messages
-        listMessageUpdate() {
-            let tokenInfo = JSON.parse(this.sessionStorage[0])
-        console.log(tokenInfo.userId);
-        let requestOption = {
-                method :"GET",
-                mode: "cors",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${tokenInfo.token}`,
-                    "userId": tokenInfo.userId,
-                }
-        }
-        fetch(`${this.urlApi.listAllMessage}?limit=${this.limit}`, requestOption)
-        .then((reponse) => 
-            reponse.json()
-            .then((data) => {
-                this.listMessage = data;
-                this.userId = tokenInfo.userId;
-                this.offset = +this.limit;
-                this.finTableau = false
-            })
-        ).catch(erreur => console.log('erreur : ' + erreur));
-        },
 
+        //charge plus de message une fois en bas de page 
         chargerPlus() {
             let tokenInfo = JSON.parse(this.sessionStorage[0])
         let requestOption = {
@@ -263,11 +231,33 @@ export default {
         ).catch(erreur => console.log('erreur : ' + erreur));
         },
 
+        // Met à jour la liste de tout les messages
+        listMessageUpdate() {
+        let tokenInfo = JSON.parse(this.sessionStorage[0])
+        let requestOption = {
+                method :"GET",
+                mode: "cors",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${tokenInfo.token}`,
+                    "userId": tokenInfo.userId,
+                }
+        }
+        fetch(`${this.urlApi.listAllMessage}?limit=${this.limit}`, requestOption)
+        .then((reponse) => 
+            reponse.json()
+            .then((data) => {
+                this.listMessage = data;
+                this.userId = tokenInfo.userId;
+                this.offset = +this.limit;
+                this.finTableau = false
+            })
+        ).catch(erreur => console.log('erreur : ' + erreur));
+        },
+
         //Update le like
         updateLike(messageId) {
-            let tokenInfo = JSON.parse(this.sessionStorage[0])
-        console.log(tokenInfo.userId);
-        console.log(messageId);
+        let tokenInfo = JSON.parse(this.sessionStorage[0])
         let requestOption = {
                 method :"PUT",
                 mode: "cors",
@@ -283,8 +273,7 @@ export default {
             fetch(this.urlApi.updateLike, requestOption)
             .then((reponse) => 
                 reponse.json()
-                .then((data) => {
-                    console.log(data);
+                .then(() => {
                     this.listMessageUpdate();
                 })
             ).catch(erreur => console.log('erreur : ' + erreur));
@@ -318,8 +307,7 @@ export default {
                 fetch(this.urlApi.updateMessage, requestOption)
                 .then((reponse) => 
                     reponse.json()
-                    .then((data) => {
-                        console.log(data);
+                    .then(() => {
                         this.listMessageUpdate();
                         this.modifTitle = ""
                         this.modifAttachment=""
@@ -357,8 +345,7 @@ export default {
                 fetch(this.urlApi.createMessage, requestOption)
                 .then((reponse) => 
                     reponse.json()
-                    .then((data) => {
-                        console.log(data);
+                    .then(() => {
                         this.listMessageUpdate();
                         this.creerTitle = ""
                         // this.creerAttachment=""

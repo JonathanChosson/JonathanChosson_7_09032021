@@ -1,4 +1,5 @@
 <template>
+    <!-- Formulaire de création -->
     <div id="formCreate" class="container">
         <b-form class=" border p-2 border-dark">
             <p class="m-0 h4" ><span class="badge badge-dark m-1">Envoyer un message </span></p>
@@ -18,11 +19,6 @@
             <b-form-group
                 label-for="attachment"
             >Photo (jpg, png, gif)
-            <!-- <b-form-input
-                id="attachment"
-                type="text"
-                v-model="creerAttachment"
-            ></b-form-input> -->
                 <b-form-file id="file" v-model="fileCreate" class="mt-3" type="file" plain></b-form-file>
                 <div class="mt-3">Fichier Choisi : {{ fileCreate ? fileCreate.name : '' }}</div>
             </b-form-group>
@@ -93,8 +89,7 @@ export default {
                 fetch(this.urlApi.createMessage, requestOption)
                 .then((reponse) => 
                     reponse.json()
-                    .then((data) => {
-                        console.log(data);
+                    .then(() => {
                         this.$parent.listMessageUpdate();
                         this.creerTitle = ""
                         // this.creerAttachment=""

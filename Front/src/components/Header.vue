@@ -3,17 +3,21 @@
     <b-navbar toggleable="lg" type="dark" variant="dark">
         <b-navbar-brand href="#"><img src="../assets/images/Groupomania_Logos/icon-left-font-monochrome-white.png" alt="Groupomania" class="header_img" /></b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-
         <b-collapse id="nav-collapse" is-nav>
-            <b-navbar-nav class="d-flex">
-                <b-nav-item class="align-self-center"> <router-link to="/" class="text-white">Accueil</router-link></b-nav-item>
-                <b-nav-item class="align-self-center"><router-link to="/about" class="text-white">About</router-link></b-nav-item>
-                <b-nav-item v-b-modal="'modif-user-modal'" class="align-self-center">
+            <b-navbar-nav class="d-flex align-items-center">
+                <b-nav-item>
+                    <b-avatar variant="secondary" icon="house-fill" ></b-avatar><br />
+                    <router-link to="/" class="text-white">Accueil</router-link>
+                </b-nav-item>
+                <b-nav-item v-b-modal="'modif-user-modal'">
                     <b-avatar v-if="!userInfo.user.photo"></b-avatar>
                     <b-avatar v-else :src="userInfo.user.photo"></b-avatar>
-                    <p class="text-white"  > {{userInfo.user.userName}}</p>
+                    <p class="text-white m-0"  > {{userInfo.user.userName}}</p>
                 </b-nav-item>
-                <b-nav-item class="align-self-center" @click="deconnexion()"><p class="text-white">Deconnexion</p></b-nav-item>
+                <b-nav-item @click="deconnexion()">
+                    <b-avatar variant="warning" icon="power" ></b-avatar>
+                    <p class="text-white m-0">Deconnexion</p>
+                </b-nav-item>
             </b-navbar-nav>
         </b-collapse>
     </b-navbar>
@@ -34,12 +38,6 @@
                         <b-form-group
                             label-for="photo"
                         >Ma Photo actuelle : 
-                        <!-- <b-form-input
-                            id="photo"
-                            type="text"
-                            :placeholder =  userInfo.user.photo
-                            v-model="modifPhoto"
-                        ></b-form-input> -->
                         <b-avatar v-if="!userInfo.user.photo"></b-avatar>
                         <b-avatar v-else :src="userInfo.user.photo"></b-avatar>
                         <b-form-file id="file" v-model="file1" class="mt-3" type="file" plain></b-form-file>
@@ -130,12 +128,10 @@ export default {
                     body : formData
                     
                 }
-            console.log(requestOption);
                 fetch(this.urlApi.updateProfil, requestOption)
                 .then((reponse) => 
                     reponse.json()
-                    .then((data) => {
-                        console.log(data);
+                    .then(() => {
                         this.$parent.majListe();
                         this.getUser();
                         this.modifUserName = "";
@@ -170,8 +166,7 @@ export default {
         },
         //Avoir les infos de l'User connecté 
         getUser(){
-            let tokenInfo = JSON.parse(this.sessionStorage[0])
-        console.log(tokenInfo.userId);
+        let tokenInfo = JSON.parse(this.sessionStorage[0])
         let requestOption = {
                 method :"GET",
                 mode: "cors",
@@ -185,7 +180,6 @@ export default {
         .then((reponse) => 
             reponse.json()
             .then((data) => {
-                console.log(data);
                 this.userInfo = data;
                     this.$store.commit('isAdmin', data.user.isAdmin)
             })
