@@ -214,12 +214,21 @@ exports.delete = (req,res,next) =>{
             return data;
     };
 
+    async function userFind(){
+        let reponse = await models.User.findOne({
+            where: {id: req.body.userId}
+        });
+            let data = await reponse;
+            return data; 
+    }
+
     async function destroy(){
         let messageFinded = await messageFind();
+        let userFindedIsAdmin = await userFind();
         if(messageFinded == null){
             res.status(404).json({ "Message": "Ce contenu n'existe plus" });
         }else{
-            if (messageFinded.dataValues.UserId === req.body.userId){
+            if (messageFinded.dataValues.UserId === req.body.userId || userFindedIsAdmin){
             console.log(messageFinded.dataValues.attachment);
             const filename = messageFinded.dataValues.attachment.split('/images/messages/')[1];
             fs.unlink(`images/messages/${filename}`, () => {});

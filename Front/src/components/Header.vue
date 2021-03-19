@@ -185,7 +185,9 @@ export default {
         .then((reponse) => 
             reponse.json()
             .then((data) => {
+                console.log(data);
                 this.userInfo = data;
+                    this.$store.commit('isAdmin', data.user.isAdmin)
             })
         ).catch(erreur => console.log('erreur : ' + erreur));
         },
@@ -211,6 +213,7 @@ export default {
                 reponse.json()
                 .then((data) => {
                     this.userInfo = data;
+                    this.$store.commit('isAdmin', data.user.isAdmin)
                 })
             ).catch(erreur => console.log('erreur : ' + erreur));
         }

@@ -21,7 +21,8 @@ export default new Vuex.Store({
       "supprProfil": "http://localhost:3000/api/auth/delete",
     },
     logged: false,
-    listUser:""
+    listUser:"",
+    isAdmin:""
   },
   mutations: {
     connexion(state, data){
@@ -41,6 +42,9 @@ export default new Vuex.Store({
     },
     userList(state, data){
       state.listUser = data
+    },
+    isAdmin(state, data){
+      state.isAdmin = data
     }
   },
   actions: {

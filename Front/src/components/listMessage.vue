@@ -81,7 +81,7 @@
                             <b-badge variant="info" class="mb-2" v-if="message.UserId == userId" v-b-modal="'my-modal('+(message.id)+')'">
                                 <b-icon icon="pencil-fill" font-scale="1.6"></b-icon>
                             </b-badge>
-                            <b-badge variant="danger" class="mb-2 ml-2" v-if="message.UserId == userId" v-b-toggle="'collapse-'+message.id">
+                            <b-badge variant="danger" class="mb-2 ml-2" v-if="message.UserId == userId || isAdmin" v-b-toggle="'collapse-'+message.id">
                                 <b-icon icon="trash" font-scale="1.6"></b-icon>
                             </b-badge>
                             <b-collapse :id='"collapse-"+message.id'>
@@ -177,7 +177,7 @@ export default {
         CreateMessage
     },
     computed: {
-        ...mapState(['sessionStorage','urlApi','logged']),
+        ...mapState(['sessionStorage','urlApi','logged', 'isAdmin']),
         // Validation de champs 
         validation() {
         return this.creerTitle.length > 4

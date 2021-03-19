@@ -84,7 +84,7 @@ exports.profil = (req, res, next) => {
         userId = req.body.userId;
     }
     models.User.findOne({
-        attributes: ['id','email', 'userName', 'bio', 'photo'],
+        attributes: ['id','email', 'userName', 'bio', 'photo','isAdmin'],
         where: {id : userId}
     })
     .then(user =>{
