@@ -73,7 +73,11 @@
                     placeholder="Entrer mot de passe"
                     v-model="signPassword"
                     required
+                    :state="validationPassword"
                 ></b-form-input>
+                <b-form-invalid-feedback :state="validationPassword">
+                    <p class="text-warning">Veuillez utiliser au moins 5 caractères</p> 
+                </b-form-invalid-feedback>
                 </b-form-group>
                 <b-form-group
                     id="input-group-6"
@@ -85,9 +89,13 @@
                     placeholder="Verifier mot de passe"
                     v-model="verifSignPassword"
                     required
+                    :state="validationVerifPassword"
                 ></b-form-input>
+                <b-form-invalid-feedback :state="validationVerifPassword">
+                </b-form-invalid-feedback>
                 </b-form-group>
-                <b-button type="submit" variant="primary">Inscription</b-button>
+                <b-button v-if="validationVerifPassword" type="submit" variant="primary">Inscription</b-button>
+                <b-button v-else type="submit" variant="dark" >Inscription</b-button>
             </b-form>
         </div>
     </div>
@@ -113,6 +121,21 @@
     },
     computed: {
         ...mapState(['sessionStorage','urlApi','logged']),
+        // Validation de champs 
+        validationPassword() {
+            if(this.signPassword.length > 4){
+                return true
+            }else{
+                return false
+            }
+        },
+        validationVerifPassword() {
+            if(this.verifSignPassword.length > 4 && this.signPassword === this.verifSignPassword ){
+                return true
+            }else{
+                return false
+            }
+        },
     },
     methods : {
         makeToast(body = null) {
