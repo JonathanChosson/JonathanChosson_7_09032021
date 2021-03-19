@@ -89,7 +89,7 @@ exports.likeUpdate = (req, res, next) => {
     if (req.body.messageId <= 0 || req.body.messageId == null ){
         return  res.status(400).json({'error': 'parametres invalide'})
     }
-    
+    //recherche le message
     async function messageFind(){
             let reponse = await models.Message.findOne({
             where: {id: req.body.messageId}
@@ -98,26 +98,10 @@ exports.likeUpdate = (req, res, next) => {
             return data;
     };
 
-    async function messageFindId(){
-        let reponse = await models.Message.findOne({
-        where: {id: req.body.messageId}
-    });
-        let data = await reponse.id;
-        return data;
-};
-
-    async function userFind(){
-        let reponse = await models.User.findOne({
-        attributes: ['id'],
-        where: {id: req.body.userId}
-    });
-        let data = await reponse.id;
-        return data;
-    };
-
+    //verifie si l'utilisateur aime déjà
     async function liked() {
-        let userId = await userFind();
-        let messageId = await messageFindId();
+        let userId =  req.body.userId;
+        let messageId = req.body.messageId;
         let reponse = await models.Like.findOne({
             where: {
                 userId: userId,
@@ -127,16 +111,15 @@ exports.likeUpdate = (req, res, next) => {
         return reponse
     };
 
+    //met à jour 
     async function majLiked(){
         likedResult = await liked();
         if (likedResult == null) {
-        console.log('Ne like pas encore');
         let message = await messageFind();
-        let user = await userFind();
-        let messageId = await messageFindId();
+        let user =  req.body.userId;
+        let messageId = req.body.messageId;
         await message.addUser(user)
         .then((modif) => { 
-            console.log(message.dataValues.likes);
             models.Message.update({
                 likes: message.dataValues.likes +1
             },
@@ -145,10 +128,9 @@ exports.likeUpdate = (req, res, next) => {
             res.status(200).json({ 'modif': modif}); })
         .catch((err) => {res.status(500).json({ err });})
     }else{
-        console.log('like déjà');
         let like = await liked();
         let message = await messageFind();
-        let messageId = await messageFindId();
+        let messageId = req.body.messageId;
         like.destroy()
         .then((modif) => { 
             models.Message.update({
@@ -170,7 +152,6 @@ exports.update = (req, res ,next) => {
         where: {id : nouvellesInfos.messageId}
     })
     .then(messageFind =>{
-        console.log(messageFind.dataValues);
             let titleNew = nouvellesInfos.title ? nouvellesInfos.title : messageFind.dataValues.title ;
             let contentNew = nouvellesInfos.content ? nouvellesInfos.content : messageFind.dataValues.content;
             urlNouvelleImage = () => {
@@ -190,12 +171,10 @@ exports.update = (req, res ,next) => {
                 {where : {id : nouvellesInfos.messageId}}
             )
             .then(function(){
-                    console.log('message Modifié');
                     res.status(201).json({ "message" : "Modification réussi" })
         
             })
             .catch(function(err){
-                console.log('message non modifié');
                 return res.status(501).json({ 'error': err});
             })
     })
@@ -229,7 +208,6 @@ exports.delete = (req,res,next) =>{
             res.status(404).json({ "Message": "Ce contenu n'existe plus" });
         }else{
             if (messageFinded.dataValues.UserId === req.body.userId || userFindedIsAdmin){
-            console.log(messageFinded.dataValues.attachment);
             const filename = messageFinded.dataValues.attachment.split('/images/messages/')[1];
             fs.unlink(`images/messages/${filename}`, () => {});
             messageFinded.destroy()

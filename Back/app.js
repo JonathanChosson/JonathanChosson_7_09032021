@@ -16,6 +16,7 @@ app.use(bodyParser.json());
 //Sécurisation des Headers
 app.use(helmet());
 
+
 // Met en place les headers
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');

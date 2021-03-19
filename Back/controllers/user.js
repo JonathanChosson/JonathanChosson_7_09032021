@@ -42,7 +42,6 @@ exports.signup = (req, res, next) => {
 
 // Route login /api/auth/login
 exports.login = (req,res,next) => {
-    console.log(req.body);
     if (req.body.email == null || req.body.password == null) {
         return res.status(400).json({'error': 'Champs obligatoire vide'})
     }
@@ -63,7 +62,7 @@ exports.login = (req,res,next) => {
                         userId: user.id,
                         token: jwt.sign(
                             { userId : user.id, isAdmin: user.isAdmin},
-                            'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTYxMTczOTYwMSwiaWF0IjoxNjExNzM5NjAxfQ.g-hcbPqOZ5DyWdeluvb0y1_GK4nJ-dw_M4FCXqYfW7E',
+                            process.env.TOKEN_JWT,
                             {expiresIn: '24h'}
                         )
                     });
@@ -120,7 +119,6 @@ exports.allProfil = (req, res, next) => {
 
 // Route updateProfil /api/auth/updateProfil
 exports.updateProfil = (req, res, next) => {
-    console.log(req.body);
     nouvellesInfos = JSON.parse(req.body.info);
     urlNouvelleImage = () => {
         if(!req.file){
@@ -140,7 +138,6 @@ exports.updateProfil = (req, res, next) => {
         {where : {id : req.headers.userid}}
     )
     .then(function(userId){
-            console.log('utilisateur Modifié');
             models.User.findOne({
                 attributes: ['userName','bio'],
                 where: {id : userId}
@@ -151,10 +148,10 @@ exports.updateProfil = (req, res, next) => {
             .catch(error => res.status(501).json({error}))
     })
     .catch(function(err){
-        console.log('utilisateur non modifié');
         return res.status(500).json({ 'error': err});
     })
 };
+
 // route delete User /api/auth/delete
 exports.delete = (req,res,next) =>{
     async function userFind(){
