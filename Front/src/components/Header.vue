@@ -9,12 +9,12 @@
                     <b-avatar variant="secondary" icon="house-fill" ></b-avatar><br />
                     <router-link to="/" class="text-white">Accueil</router-link>
                 </b-nav-item>
-                <b-nav-item v-b-modal="'modif-user-modal'">
+                <b-nav-item v-if="logged" v-b-modal="'modif-user-modal'">
                     <b-avatar v-if="!userInfo.user.photo"></b-avatar>
                     <b-avatar v-else :src="userInfo.user.photo"></b-avatar>
                     <p class="text-white m-0"  > {{userInfo.user.userName}}</p>
                 </b-nav-item>
-                <b-nav-item @click="deconnexion()">
+                <b-nav-item v-if="logged" @click="deconnexion()">
                     <b-avatar variant="warning" icon="power" ></b-avatar>
                     <p class="text-white m-0">Deconnexion</p>
                 </b-nav-item>
