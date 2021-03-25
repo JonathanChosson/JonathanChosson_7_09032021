@@ -7,7 +7,8 @@ Développement (Frontend et Backend) d'un réseau social d'entreprise pour une s
 BackEnd :   
  - Création de l'API REST
  - Sécurisation
- - Respect du RGPD 
+ - Respect du RGPD
+ - Codumentation de l'API https://documenter.getpostman.com/view/14193855/TzCHCATs
 
 FrontEnd : 
 - Création d'un message
