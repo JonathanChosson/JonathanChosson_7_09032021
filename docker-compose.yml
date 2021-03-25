@@ -1,0 +1,34 @@
+version: '3.7' # specify docker-compose version
+
+# Define the services/containers to be run
+services:
+  frontend: #name of the first service
+    build: Front # specify the directory of the Dockerfile
+    ports:
+      - "8080:8080" # specify port forewarding
+    container_name: front-container
+    restart: always
+  
+  backend: #name of the second service
+    build: Back # specify the directory of the Dockerfile
+    ports:
+      - "3000:3000" #specify ports forewarding
+    container_name: back-container
+    restart: always
+    links:
+      - mysql # link this service to the database service 
+    volumes:
+      - images:/app/back
+  
+  mysql: # name of the third service
+    build: BDD # specify the directory of the Dockerfile
+    ports:
+      - "3307:3306"
+    restart: always
+    container_name: database-container
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
+  images:

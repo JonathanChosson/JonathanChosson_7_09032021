@@ -15,6 +15,10 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
+// sequelize.sync()
+//     .then(result => console.log(result))
+//     .catch(err => console.log('EEEERRRROOOOOOR',err));
+
 fs
   .readdirSync(__dirname)
   .filter(file => {
