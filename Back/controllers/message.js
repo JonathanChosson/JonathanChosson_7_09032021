@@ -131,7 +131,7 @@ exports.likeUpdate = (req, res, next) => {
         let like = await liked();
         let message = await messageFind();
         let messageId = req.body.messageId;
-        like.destroy()
+        await like.destroy()
         .then((modif) => { 
             models.Message.update({
                 likes : message.dataValues.likes -1
