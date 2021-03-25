@@ -8,7 +8,7 @@ BackEnd :
  - Création de l'API REST
  - Sécurisation
  - Respect du RGPD
- - Codumentation de l'API https://documenter.getpostman.com/view/14193855/TzCHCATs
+ - Documentation de l'API https://documenter.getpostman.com/view/14193855/TzCHCATs
 
 FrontEnd : 
 - Création d'un message
