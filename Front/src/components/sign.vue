@@ -104,7 +104,6 @@
 <script>
     import { mapState } from 'vuex'
     // import state from '../store/index'
-
     export default {
     name: 'Sign',
     data(){
@@ -145,6 +144,13 @@
             solid: true
         })
         },
+        makeToastValid(body = null) {
+        this.$bvToast.toast(`${body || 'Erreur'}`, {
+            title: `Inscription validée`,
+            variant: 'success',
+            solid: true
+        })
+        },
         connexion(mail, password){
             let mailEnvoi ="";
             let passwordEnvoi ="";
@@ -178,7 +184,6 @@
                 })
             ).catch(erreur => console.log('erreur : ' + erreur));
         },
-
         inscription(){
             let requestOption = {
                 method :"POST",
@@ -197,7 +202,11 @@
             .then((reponse) => 
                 reponse.json()
                 .then(() => {
-                    this.connexion(this.signMail, this.signPassword)
+                    this.signMail = "";
+                    this.signPseudo = "";
+                    this.signPassword ="";
+                    this.verifSignPassword= "";
+                    this.makeToastValid('Veuillez vous connecter')
                 })
             ).catch(erreur => console.log('erreur : ' + erreur));
         }
@@ -210,11 +219,9 @@
     display: flex;
     flex-flow: row wrap;
 }
-
 #connection{
     max-width: 425px;
 }
-
 #inscription{
     max-width: 425px;
 }
