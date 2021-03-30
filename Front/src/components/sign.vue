@@ -145,6 +145,13 @@
             solid: true
         })
         },
+        makeToastValid(body = null) {
+        this.$bvToast.toast(`${body || 'Erreur'}`, {
+            title: `Inscription validée`,
+            variant: 'success',
+            solid: true
+        })
+        },
         connexion(mail, password){
             let mailEnvoi ="";
             let passwordEnvoi ="";
@@ -197,7 +204,11 @@
             .then((reponse) => 
                 reponse.json()
                 .then(() => {
-                    this.connexion(this.signMail, this.signPassword)
+                    this.signMail = "";
+                    this.signPseudo = "";
+                    this.signPassword ="";
+                    this.verifSignPassword= "";
+                    this.makeToastValid('Veuillez vous connecter')
                 })
             ).catch(erreur => console.log('erreur : ' + erreur));
         }
